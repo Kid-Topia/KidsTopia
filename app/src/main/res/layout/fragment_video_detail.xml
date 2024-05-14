@@ -1,14 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary_light_yellow"
     tools:context=".presentation.fragment.VideoDetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ImageView
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="80dp"
+        android:elevation="3dp"
+        android:src="@drawable/btn_detailfragment_play"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_bg" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_channel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:elevation="3dp"
+        android:text="채널 이름"
+        android:textColor="@color/darkgrey"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_bg" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:elevation="3dp"
+        android:text="동영상 제목"
+        android:textColor="@color/primary_yellow"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_channel_name" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="55dp"
+        android:elevation="3dp"
+        android:text="자세한 동영상의 설명이 들어갑니다."
+        android:textColor="@color/darkgrey"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+
+    <ImageView
+        android:id="@+id/btn_like_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="40dp"
+        android:elevation="3dp"
+        android:src="@drawable/slc_btn_like"
+        app:layout_constraintBottom_toBottomOf="@+id/img_bg"
+        app:layout_constraintEnd_toStartOf="@+id/btn_share_img"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/img_bg"
+        app:layout_constraintStart_toStartOf="@+id/img_bg" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:text="재밌어요"
+        android:textColor="@color/ivory"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_like_img"
+        app:layout_constraintEnd_toEndOf="@+id/btn_like_img"
+        app:layout_constraintStart_toStartOf="@+id/btn_like_img"
+        app:layout_constraintTop_toTopOf="@+id/btn_like_img" />
+
+    <ImageView
+        android:id="@+id/btn_share_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="40dp"
+        android:elevation="3dp"
+        android:src="@drawable/slc_btn_like"
+        app:layout_constraintBottom_toBottomOf="@+id/img_bg"
+        app:layout_constraintEnd_toEndOf="@+id/img_bg"
+        app:layout_constraintStart_toEndOf="@+id/btn_like_img" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:text="공유할래요"
+        android:textColor="@color/ivory"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_share_img"
+        app:layout_constraintEnd_toEndOf="@+id/btn_share_img"
+        app:layout_constraintStart_toStartOf="@+id/btn_share_img"
+        app:layout_constraintTop_toTopOf="@+id/btn_share_img" />
+
+
+    <ImageView
+        android:id="@+id/img_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
+        android:elevation="2dp"
+        android:src="@drawable/bg_detailfragment_img"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="W, 1.4:1" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:elevation="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_detailfragment_grd"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_kidstopia_img"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
