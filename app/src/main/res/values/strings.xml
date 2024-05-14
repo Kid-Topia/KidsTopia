@@ -2,4 +2,7 @@
     <string name="app_name">KidsTopia</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="most_like_vidio">다른 친구들이 좋아해요</string>
+    <string name="category_vidio">카테고리 영상</string>
+    <string name="category_channel">카테고리 채널</string>
 </resources>
