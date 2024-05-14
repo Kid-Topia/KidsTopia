@@ -5,56 +5,73 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.R
+import com.limheejin.kidstopia.databinding.FragmentSearchBinding
+import com.limheejin.kidstopia.presentation.adapter.RVSearchAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentSearchBinding
+    private lateinit var searchAdapter: RVSearchAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        binding = FragmentSearchBinding.inflate(inflater)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        val items = geneateDummyItems() // 가상 데이터 설정 (나중에 API로 받아오면 실제 데이터로 대체)
+        clickSearchKeyword()
+
     }
+
+    private fun setupRecyclerView() {
+        // 리니어 레이아웃 매니저 생성 및 설정
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerviewSearch.layoutManager = layoutManager
+
+        // 어댑터 인스턴스 생성
+        searchAdapter = RVSearchAdapter(
+            onClick = { position ->
+                // 아이템 클릭 시 수행
+            },
+            onLongClick = { position ->
+                // 아이템 롱클릭 시 수행
+                true
+            }
+        )
+
+        // 리사이클러뷰에 어댑터 설정
+        binding.recyclerviewSearch.adapter = searchAdapter
+    }
+
+    private fun geneateDummyItems(): List<Item> {
+        return List(10) { index ->
+            Item(
+                title = "가정의 달 특집 핑크퐁 아기상어와...",
+                context = "5월은 푸르구나 우리들은 자란다"
+            )
+        }
+    }
+
+    private fun clickSearchKeyword() {
+        TODO("Not yet implemented")
+    }
+
 }
+
+// 리사이클러뷰를 확인해보기 위한 임시 데이터
+data class Item(
+    val title: String,
+    val context: String
+)
