@@ -11,7 +11,7 @@ import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
 import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVedio
+import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
 import kotlinx.coroutines.launch
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
-        val data = youtubeApiPopularVedio.getPopularVideoList(
+        val data = youtubeApiPopularVideo.getPopularVideoList(
             AUTH_KEY,
             "snippet, contentDetails",
             "mostPopular",

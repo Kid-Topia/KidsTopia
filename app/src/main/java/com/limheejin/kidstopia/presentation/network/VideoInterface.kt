@@ -4,7 +4,7 @@ import com.limheejin.kidstopia.model.PopularData
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface PopularVedioInterface {
+interface PopularVideoInterface {
     @GET("videos")
     suspend fun getPopularVideoList(
         @Query("key") key: String,

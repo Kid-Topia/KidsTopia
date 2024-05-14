@@ -35,6 +35,6 @@ object NetworkClient {
 
 
     val youtubeApiSearch: SearchInterface = retrofitBase.create(SearchInterface::class.java)
-    val youtubeApiPopularVedio: PopularVedioInterface = retrofitBase.create(PopularVedioInterface::class.java)
+    val youtubeApiPopularVideo: PopularVideoInterface = retrofitBase.create(PopularVideoInterface::class.java)
     val youtubeApiChannels: ChannelsInterface = retrofitBase.create(ChannelsInterface::class.java)
 }
