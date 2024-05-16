@@ -7,12 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import com.bumptech.glide.Glide
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
@@ -33,7 +27,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -48,11 +42,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
-         /* CategoryId
-         15 - Pets & Animals,   1 -  Film & Animation
-         27 - Education,        31 - Anime/Animation
-         37 - Family,           23 - Comedy
-         */
+        /* CategoryId
+        15 - Pets & Animals,   1 -  Film & Animation
+        27 - Education,        31 - Anime/Animation
+        37 - Family,           23 - Comedy
+        */
         var videoIdData = youtubeApiSearch.getSearchList(
             AUTH_KEY,
             "snippet",
