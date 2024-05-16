@@ -32,10 +32,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
-    // 뷰모델 생성
-    private val viewModel by viewModels<ViewModel> {
-        PopularVideoViewModelFactory()
-    }
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     lateinit var testData : PopularData
@@ -56,24 +52,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //popularVideoCommunicateNetwork()
         //channelsCommunicateNetwork()
 
-        // 뷰모델에서 생성한 함수로 http요청을 함
-        viewModel.getSearchData("고양이")
-        // 옵저버패턴으로 뷰모델의 라이브데이터를 감시
-        viewModel.getSearchData.observe(this) {
-            it[0].snippet.thumbnails
-
-
-
-        }
 
         dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
-        binding.button.setOnClickListener {
-            popularVideoCommunicateNetwork()
-        }
-
-        binding.button2.setOnClickListener {
-            // dao.deleteVideo("Detail이 받은 비디오ID값")
-        }
+//        binding.button.setOnClickListener {
+//            popularVideoCommunicateNetwork()
+//        }
+//
+//        binding.button2.setOnClickListener {
+//            // dao.deleteVideo("Detail이 받은 비디오ID값")
+//        }
 //        searchCommunicateNetwork("game")
 //        popularVideoCommunicateNetwork()
 //        channelsCommunicateNetwork()
