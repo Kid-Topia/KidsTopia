@@ -4,6 +4,6 @@
     <!--icon 클릭했을 때-->
     <item android:state_checked="true" android:color="@color/primary_yellow" />
     <!--icon 클릭하지 않았을 때-->
-    <item android:state_checked="false" android:color="@color/black"/>
+    <item android:state_checked="false" android:color="@color/light_grey"/>
 
 </selector>
