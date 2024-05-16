@@ -1,21 +1,31 @@
 package com.limheejin.kidstopia.presentation.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
+import com.limheejin.kidstopia.presentation.fragment.HomeFragment
+import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
+import com.limheejin.kidstopia.presentation.fragment.SearchFragment
 import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,11 +37,14 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val kidsTopia = "찌글이"
-
         searchCommunicateNetwork("game")
         popularVideoCommunicateNetwork()
         channelsCommunicateNetwork()
+
+//        val navController = (supportFragmentManager.findFragmentById(R.id.nav_frag) as NavHostFragment).navController
+//        binding.nav.setupWithNavController(navController)
+        binding.nav.setOnNavigationItemSelectedListener(this)
+        supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
     }
 
     private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
@@ -49,10 +62,10 @@ class MainActivity : AppCompatActivity() {
             "15"
         )
 
-        val url = "https://img.youtube.com/vi/" + videoIdData.items[0].id.videoId + "/mqdefault.jpg"
-        Glide.with(binding.root.context)
-            .load(url)
-            .into(binding.imageView)
+//        val url = "https://img.youtube.com/vi/" + videoIdData.items[0].id.videoId + "/mqdefault.jpg"
+//        Glide.with(binding.root.context)
+//            .load(url)
+//            .into(binding.imageView)
 
         /* 받은 snippet에서 썸네일을 가져와도 되지만 여백이 싫을때는 url값을 아래로 지정하면 여백없는 썸네일이 나옴
         https://img.youtube.com/vi + ${items.id.videoId} + /mqdefault.jpg
@@ -74,5 +87,23 @@ class MainActivity : AppCompatActivity() {
             "snippet",
             "UCL6JmiMXKoXS6bpP1D3bk8g"
         )
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.mnu_home -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commitAllowingStateLoss()
+                return true
+            }
+            R.id.mnu_search -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fl, SearchFragment()).commitAllowingStateLoss()
+                return true
+            }
+            R.id.mnu_user -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fl, MyVideoFragment()).commitAllowingStateLoss()
+                return true
+            }
+        }
+        return false
     }
 }
