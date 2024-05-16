@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         popularVideoCommunicateNetwork()
         channelsCommunicateNetwork()
 
-//        val navController = (supportFragmentManager.findFragmentById(R.id.nav_frag) as NavHostFragment).navController
-//        binding.nav.setupWithNavController(navController)
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
     }
