@@ -80,7 +80,7 @@ class SearchFragment : Fragment() {
                 bundle.putString("VideoId", videoId)
                 videoDetailFragment.arguments = bundle
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.fl, videoDetailFragment)
+                    .replace(R.id.fragment_container, videoDetailFragment)
                     .addToBackStack(null)
                     .commit()
             },
@@ -113,32 +113,32 @@ class SearchFragment : Fragment() {
 
     private fun searchVideos(query: String) {
         lifecycleScope.launch {
-            try {
+//            try {
                 val searchItems = getSearchResults(query)
                 searchAdapter.setItems(searchItems)
-            } catch (e: Exception) {
-                handleException(e) // 다양한 케이스의 예외처리를 위해 만듦
-            }
+//            } catch (e: Exception) {
+//                handleException(e) // 다양한 케이스의 예외처리를 위해 만듦
+//            }
         }
 
     }
 
-    private fun handleException(exception: Exception) {
-        val errorMessage = when (exception) {
-            is IOException -> "IO Exception 오류가 발생하였습니다."
-            is HttpException -> {
-                when (exception.code()) {
-                    400 -> "Bad Request 오류 발생"
-                    401 -> "Unauthorized 오류 발생"
-                    404 -> "not found 오류 발생"
-                    else -> "알 수 없는 오류가 발생하였습니다."
-                }
-            }
-
-            else -> "알 수 없는 오류가 발생하였습니다."
-        }
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-    }
+//    private fun handleException(exception: Exception) {
+//        val errorMessage = when (exception) {
+//            is IOException -> "IO Exception 오류가 발생하였습니다."
+//            is HttpException -> {
+//                when (exception.code()) {
+//                    400 -> "Bad Request 오류 발생"
+//                    401 -> "Unauthorized 오류 발생"
+//                    404 -> "not found 오류 발생"
+//                    else -> "알 수 없는 오류가 발생하였습니다."
+//                }
+//            }
+//
+//            else -> "알 수 없는 오류가 발생하였습니다."
+//        }
+//        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+//    }
 
     private suspend fun getSearchResults(query: String): List<SearchItems> {
         return withContext(Dispatchers.IO) {
