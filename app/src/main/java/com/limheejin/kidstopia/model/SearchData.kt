@@ -1,5 +1,7 @@
 package com.limheejin.kidstopia.model
 
+import retrofit2.http.Url
+
 data class SearchData(
     val kind: String,
     val etag: String,
