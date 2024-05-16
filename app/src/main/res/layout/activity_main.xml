@@ -33,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
+        app:itemActiveIndicatorStyle="@null"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/mnu_nav"
         app:itemIconTint="@drawable/nav_color"
