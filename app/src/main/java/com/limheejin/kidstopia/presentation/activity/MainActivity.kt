@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,12 +23,16 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
+import com.limheejin.kidstopia.repository.Repository
+import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
+import com.limheejin.kidstopia.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     lateinit var testData : PopularData
     lateinit var dao: MyFavoriteVideoDAO
@@ -46,6 +51,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //searchCommunicateNetwork("game")
         //popularVideoCommunicateNetwork()
         //channelsCommunicateNetwork()
+
+
         dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
 //        binding.button.setOnClickListener {
 //            popularVideoCommunicateNetwork()
@@ -68,14 +75,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         27 - Education,        31 - Anime/Animation
         37 - Family,           23 - Comedy
         */
-        var videoIdData = youtubeApiSearch.getSearchList(
-            AUTH_KEY,
-            "snippet",
-            "strict",
-            "video",
-            8, query,
-            "15"
-        )
+//        var videoIdData = youtubeApiSearch.getSearchList(
+//            AUTH_KEY,
+//            "snippet",
+//            "strict",
+//            "video",
+//            8, query,
+//            "15"
+//        )
 
 //        val url = "https://img.youtube.com/vi/" + videoIdData.items[0].id.videoId + "/mqdefault.jpg"
 //        Glide.with(binding.root.context)

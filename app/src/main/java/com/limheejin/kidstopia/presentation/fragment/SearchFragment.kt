@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.R
@@ -14,6 +16,8 @@ import com.limheejin.kidstopia.databinding.FragmentSearchBinding
 import com.limheejin.kidstopia.model.SearchItems
 import com.limheejin.kidstopia.presentation.adapter.RVSearchAdapter
 import com.limheejin.kidstopia.presentation.network.NetworkClient
+import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
+import com.limheejin.kidstopia.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,6 +26,10 @@ import retrofit2.HttpException
 import java.lang.Exception
 
 class SearchFragment : Fragment() {
+    // 뷰모델 생성
+    private val viewModel by viewModels<ViewModel> {
+        PopularVideoViewModelFactory()
+    }
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchAdapter: RVSearchAdapter
 
@@ -42,6 +50,14 @@ class SearchFragment : Fragment() {
 
         setupRecyclerView()
         setEasySearchButton()
+
+        // 뷰모델에서 생성한 함수로 http요청을 함
+        viewModel.getSearchData("cat")
+        // 옵저버패턴으로 뷰모델의 라이브데이터를 감시
+        viewModel.getSearchData.observe(viewLifecycleOwner) {
+
+
+        }
 
         binding.etSearch.addTextChangedListener { editable ->
             val query = editable.toString()
