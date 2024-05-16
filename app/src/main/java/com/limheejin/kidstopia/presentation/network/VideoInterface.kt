@@ -13,3 +13,12 @@ interface PopularVideoInterface {
         @Query("maxResults") maxResults: Int
     ): PopularData
 }
+
+interface VideoInterface {
+    @GET("videos")
+    suspend fun getVideoData(
+        @Query("key") key: String,
+        @Query("part") part: String,
+        @Query("id") id: String
+    ): PopularData
+}
