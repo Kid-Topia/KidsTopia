@@ -1,6 +1,7 @@
 package com.limheejin.kidstopia.presentation.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
+import com.limheejin.kidstopia.model.PopularData
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.fragment.HomeFragment
 import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
 import com.limheejin.kidstopia.presentation.fragment.SearchFragment
@@ -17,10 +22,15 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    lateinit var testData : PopularData
+    lateinit var dao: MyFavoriteVideoDAO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,9 +41,22 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             insets
         }
 
-        searchCommunicateNetwork("game")
-        popularVideoCommunicateNetwork()
-        channelsCommunicateNetwork()
+        val kidsTopia = "찌글이"
+
+        //searchCommunicateNetwork("game")
+        //popularVideoCommunicateNetwork()
+        //channelsCommunicateNetwork()
+        dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
+        binding.button.setOnClickListener {
+            popularVideoCommunicateNetwork()
+        }
+
+        binding.button2.setOnClickListener {
+            // dao.deleteVideo("Detail이 받은 비디오ID값")
+        }
+//        searchCommunicateNetwork("game")
+//        popularVideoCommunicateNetwork()
+//        channelsCommunicateNetwork()
 
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
@@ -65,12 +88,24 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
-        val data = youtubeApiPopularVideo.getPopularVideoList(
+        testData = youtubeApiPopularVideo.getPopularVideoList(
             AUTH_KEY,
             "snippet, contentDetails",
             "mostPopular",
-            100
+            10
         )
+
+        val id = testData.items[1].id
+        val channelId = testData.items[1].snippet.channelId
+        val title = testData.items[1].snippet.title
+        val thumbnails = testData.items[1].snippet.thumbnails.high.url
+        val date = LocalDateTime.now()
+        val classify = "isLiked"
+
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.insertVideo(MyFavoriteVideoEntity(id, title, channelId, thumbnails, date.toString(), classify))
+            Log.d("checkDb", "${dao.getAllVideo()}")
+        }
     }
 
     private fun channelsCommunicateNetwork() = lifecycleScope.launch {
