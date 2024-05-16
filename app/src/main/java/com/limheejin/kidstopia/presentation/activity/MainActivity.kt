@@ -47,13 +47,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //popularVideoCommunicateNetwork()
         //channelsCommunicateNetwork()
         dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
-        binding.button.setOnClickListener {
-            popularVideoCommunicateNetwork()
-        }
-
-        binding.button2.setOnClickListener {
-            // dao.deleteVideo("Detail이 받은 비디오ID값")
-        }
+//        binding.button.setOnClickListener {
+//            popularVideoCommunicateNetwork()
+//        }
+//
+//        binding.button2.setOnClickListener {
+//            // dao.deleteVideo("Detail이 받은 비디오ID값")
+//        }
 //        searchCommunicateNetwork("game")
 //        popularVideoCommunicateNetwork()
 //        channelsCommunicateNetwork()
