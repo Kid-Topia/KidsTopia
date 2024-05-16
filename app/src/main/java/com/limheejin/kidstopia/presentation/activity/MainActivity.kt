@@ -1,6 +1,7 @@
 package com.limheejin.kidstopia.presentation.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -9,13 +10,23 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
+import com.limheejin.kidstopia.model.PopularData
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
+    lateinit var testData : PopularData
+    lateinit var dao: MyFavoriteVideoDAO
+
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +40,18 @@ class MainActivity : AppCompatActivity() {
 
         val kidsTopia = "찌글이"
 
-        searchCommunicateNetwork("game")
-        popularVideoCommunicateNetwork()
-        channelsCommunicateNetwork()
+        //searchCommunicateNetwork("game")
+        //popularVideoCommunicateNetwork()
+        //channelsCommunicateNetwork()
+        dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
+
+        binding.button.setOnClickListener {
+            popularVideoCommunicateNetwork()
+        }
+
+        binding.button2.setOnClickListener {
+            // dao.deleteVideo("Detail이 받은 비디오ID값")
+        }
     }
 
     private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
@@ -60,12 +80,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
-        val data = youtubeApiPopularVideo.getPopularVideoList(
+        testData = youtubeApiPopularVideo.getPopularVideoList(
             AUTH_KEY,
             "snippet, contentDetails",
             "mostPopular",
-            100
+            10
         )
+
+        val id = testData.items[0].id
+        val channelId = testData.items[0].snippet.channelId
+        val title = testData.items[0].snippet.title
+        val thumbnails = testData.items[0].snippet.thumbnails.high.url
+        val date = LocalDateTime.now()
+        val classify = "isLiked"
+
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.insertVideo(MyFavoriteVideoEntity(id, title, channelId, thumbnails, date.toString(), classify))
+            Log.d("checkDb", "${dao.getAllVideo()}")
+        }
     }
 
     private fun channelsCommunicateNetwork() = lifecycleScope.launch {
