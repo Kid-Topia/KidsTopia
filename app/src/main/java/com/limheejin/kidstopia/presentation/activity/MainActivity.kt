@@ -1,23 +1,23 @@
 package com.limheejin.kidstopia.presentation.activity
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.limheejin.kidstopia.R
-import com.limheejin.kidstopia.databinding.ActivityMainBinding
-import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
-import kotlinx.coroutines.launch
+    import android.os.Bundle
+    import androidx.activity.enableEdgeToEdge
+    import androidx.appcompat.app.AppCompatActivity
+    import androidx.core.view.ViewCompat
+    import androidx.core.view.WindowInsetsCompat
+    import androidx.lifecycle.lifecycleScope
+    import com.bumptech.glide.Glide
+    import com.limheejin.kidstopia.R
+    import com.limheejin.kidstopia.databinding.ActivityMainBinding
+    import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
+    import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
+    import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
+    import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
+    import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    override fun onCreate(savedInstanceState: Bundle?) {
+    class MainActivity : AppCompatActivity() {
+        private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+        override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)

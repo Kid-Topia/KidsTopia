@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoryFragmentAdapter(private val context: Context) {
-//    RecyclerView.Adapter<CategoryFragmentAdapter.CategoryViewHolder{
+//    RecyclerView.Adapter<CategoryFragmentAdapter.CategoryViewHolder>(){
 //
 //
 //    override fun onCreateViewHolder(

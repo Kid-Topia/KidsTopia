@@ -44,11 +44,10 @@ class HomeFragment : Fragment() {
         adapterChannel = ChannelFragmentAdapter(requireContext())
 
         binding.mostVidio.layoutManager = layoutManagerMost
-//        binding.mostVidio.adapter = adapterMost
+        binding.mostVidio.adapter = adapterMost
 
         binding.category.layoutManager = layoutManagerCategotry
 //        binding.category.adapter = adapterCategoty
-
 
         binding.channel.layoutManager = layoutManagerChannel
 //        binding.channel.adapter = adapterChannel
