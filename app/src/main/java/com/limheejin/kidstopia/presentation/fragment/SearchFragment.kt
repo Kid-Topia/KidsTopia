@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,7 +16,7 @@ import com.limheejin.kidstopia.model.SearchItems
 import com.limheejin.kidstopia.presentation.adapter.RVSearchAdapter
 import com.limheejin.kidstopia.presentation.network.NetworkClient
 import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
-import com.limheejin.kidstopia.viewmodel.ViewModel
+import com.limheejin.kidstopia.viewmodel.SearchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,7 +26,7 @@ import java.lang.Exception
 
 class SearchFragment : Fragment() {
     // 뷰모델 생성
-    private val viewModel by viewModels<ViewModel> {
+    private val viewModel by viewModels<SearchViewModel> {
         PopularVideoViewModelFactory()
     }
     private lateinit var binding: FragmentSearchBinding
@@ -51,21 +50,18 @@ class SearchFragment : Fragment() {
         setupRecyclerView()
         setEasySearchButton()
 
-        // 뷰모델에서 생성한 함수로 http요청을 함
-        viewModel.getSearchData("cat")
-        // 옵저버패턴으로 뷰모델의 라이브데이터를 감시
         viewModel.getSearchData.observe(viewLifecycleOwner) {
-
+            viewModel.getSearchData("123")
 
         }
 
-        binding.etSearch.addTextChangedListener { editable ->
-            val query = editable.toString()
-            if (query.isNotEmpty()) {
-                searchVideos(query)
-            }
-            // MVVM 적용하고나서 다시 여쭤보기
-        }
+//        binding.etSearch.addTextChangedListener { editable ->
+//            val query = editable.toString()
+//            if (query.isNotEmpty()) {
+//                searchVideos(query)
+//            }
+//            // MVVM 적용하고나서 다시 여쭤보기
+//        }
 
 
 //        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -164,7 +160,7 @@ class SearchFragment : Fragment() {
                     part = "snippet",
                     safeSearch = "strict",
                     type = "video",
-                    maxResults = 3, // 데이터 아끼기 위해 일단 3개
+                    maxResults = 1, // 데이터 아끼기 위해 일단 3개
                     query = query,
                     videoCategoryId = "15" // Pets & Animals
                 )
@@ -176,6 +172,31 @@ class SearchFragment : Fragment() {
         }
     }
 
-}
 
+//    private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
+//        /* CategoryId
+//        15 - Pets & Animals,   1 -  Film & Animation
+//        27 - Education,        31 - Anime/Animation
+//        37 - Family,           23 - Comedy
+//        */
+////        var videoIdData = youtubeApiSearch.getSearchList(
+////            AUTH_KEY,
+////            "snippet",
+////            "strict",
+////            "video",
+////            8, query,
+////            "15"
+////        )
+//
+////        val url = "https://img.youtube.com/vi/" + videoIdData.items[0].id.videoId + "/mqdefault.jpg"
+////        Glide.with(binding.root.context)
+////            .load(url)
+////            .into(binding.imageView)
+//
+//        /* 받은 snippet에서 썸네일을 가져와도 되지만 여백이 싫을때는 url값을 아래로 지정하면 여백없는 썸네일이 나옴
+//        https://img.youtube.com/vi + ${items.id.videoId} + /mqdefault.jpg
+//        */
+//    }
+
+}
 

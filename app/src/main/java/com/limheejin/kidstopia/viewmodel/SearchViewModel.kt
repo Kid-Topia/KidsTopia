@@ -11,9 +11,8 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient
 import com.limheejin.kidstopia.repository.Repository
 import com.limheejin.kidstopia.repository.RepositoryImpl
 import kotlinx.coroutines.launch
-import retrofit2.http.Query
 
-class ViewModel(private val repository: Repository): ViewModel() {
+class SearchViewModel(private val repository: Repository): ViewModel() {
     private val _getSearchData: MutableLiveData<MutableList<SearchItems>> = MutableLiveData()
     val getSearchData: LiveData<MutableList<SearchItems>> get() =_getSearchData
     fun getSearchData(query: String) = viewModelScope.launch {
@@ -29,7 +28,7 @@ class PopularVideoViewModelFactory : ViewModelProvider.Factory {
         extras: CreationExtras
     ): T {
 
-        return ViewModel(
+        return SearchViewModel(
             repository
         ) as T
     }

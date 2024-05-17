@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -25,7 +24,6 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopu
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
 import com.limheejin.kidstopia.repository.Repository
 import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
-import com.limheejin.kidstopia.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
