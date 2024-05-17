@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.MostPopularItemBinding
+import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.PopularItems
 
-class MostFragmentAdapter(private val context: Context) :
+class MostFragmentAdapter(private val context: Context ) :
     RecyclerView.Adapter<MostFragmentAdapter.MostViewHolder>() {
 
-    private val items: MutableList<PopularItems> = mutableListOf()
+        var items: MutableList<PopularItems> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MostViewHolder {
         val binding =

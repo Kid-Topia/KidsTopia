@@ -29,5 +29,4 @@ class CategoryFragmentAdapter(private val context: Context) {
 //    class CategoryViewHolder {
 //
 //    }
-
 }
