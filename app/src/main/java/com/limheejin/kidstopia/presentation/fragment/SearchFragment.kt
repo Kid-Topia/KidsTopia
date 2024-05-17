@@ -1,33 +1,26 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentSearchBinding
-import com.limheejin.kidstopia.model.SearchItems
 import com.limheejin.kidstopia.presentation.adapter.RVSearchAdapter
-import com.limheejin.kidstopia.presentation.network.NetworkClient
-import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
+import com.limheejin.kidstopia.viewmodel.SearchVideoViewModelFactory
 import com.limheejin.kidstopia.viewmodel.SearchViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.IOException
-import retrofit2.HttpException
-import java.lang.Exception
 
 class SearchFragment : Fragment() {
     // 뷰모델 생성
     private val viewModel by viewModels<SearchViewModel> {
-        PopularVideoViewModelFactory()
+        SearchVideoViewModelFactory()
     }
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchAdapter: RVSearchAdapter
@@ -48,33 +41,9 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        setEasySearchButton()
-
-        viewModel.getSearchData.observe(viewLifecycleOwner) {
-            viewModel.getSearchData("123")
-
-        }
-
-//        binding.etSearch.addTextChangedListener { editable ->
-//            val query = editable.toString()
-//            if (query.isNotEmpty()) {
-//                searchVideos(query)
-//            }
-//            // MVVM 적용하고나서 다시 여쭤보기
-//        }
-
-
-//        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//                val query = binding.etSearch.text.toString()
-//                if (query.isNotEmpty()){
-//                    searchVideos(query)
-//                }
-//                return@setOnEditorActionListener true
-//            } else {
-//                false
-//            }
-//        }
+        setupSearch()
+        setupEasySearchButton()
+        setupObservers()
 
     }
 
@@ -106,97 +75,68 @@ class SearchFragment : Fragment() {
         binding.recyclerviewSearch.adapter = searchAdapter
     }
 
-    private fun setEasySearchButton() {
+    private fun setupSearch() {
+
+        //        // 검색어가 갱신될 때마다 자동 검색
+//        binding.etSearch.addTextChangedListener { editable ->
+//            val query = editable.toString()
+//            if (query.isNotEmpty()) {
+//                viewModel.searchVideos(query)
+//            }
+//        }
+
+        // 검색 버튼없이 키보드의 엔터로 작동 (imeOptions="actionSearch", inputType="text" 로 설정 후 구현)
+        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER
+            ) {
+                val query = binding.etSearch.text.toString()
+                if (query.isNotEmpty()) {
+                    viewModel.searchVideos(query)
+                } else {
+                    Toast.makeText(requireContext(), "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                }
+                true
+            } else false
+        }
+
+//        // 검색 버튼(btnSearch)을 추가한다면 아래 코드 사용 가능
+//        binding.btnSearch.setOnClickListener {
+//            val query = binding.etSearch.text.toString()
+//            if (query.isNotEmpty()){
+//                viewModel.searchVideos(query)
+//            } else {
+//                Toast.makeText(requireContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
+    }
+
+    private fun setupEasySearchButton() {
         binding.btnSearchKids.setOnClickListener {
             binding.etSearch.setText("키즈")
-            searchVideos("키즈")
+            viewModel.searchVideos("키즈")
         }
 
         binding.btnSearchSleepingmusic.setOnClickListener {
             binding.etSearch.setText("수면음악")
-            searchVideos("수면음악")
+            viewModel.searchVideos("수면음악")
         }
 
         binding.btnSearchDongyo.setOnClickListener {
             binding.etSearch.setText("동요")
-            searchVideos("동요")
+            viewModel.searchVideos("동요")
         }
     }
 
-    private fun searchVideos(query: String) {
-        lifecycleScope.launch {
-            try {
-                val searchItems = getSearchResults(query)
-                searchAdapter.setItems(searchItems)
-            } catch (e: Exception) {
-                handleException(e) // 다양한 케이스의 예외처리를 위해 만듦
-            }
+    private fun setupObservers() {
+        viewModel.getSearchData.observe(viewLifecycleOwner) { searchItems ->
+            searchAdapter.setItems(searchItems)
         }
-
-    }
-
-    private fun handleException(exception: Exception) {
-        val errorMessage = when (exception) {
-            is IOException -> "IO Exception 오류가 발생하였습니다."
-            is HttpException -> {
-                when (exception.code()) {
-                    400 -> "Bad Request 오류 발생"
-                    401 -> "Unauthorized 오류 발생"
-                    404 -> "not found 오류 발생"
-                    else -> "알 수 없는 오류가 발생하였습니다."
-                }
-            }
-
-            else -> "알 수 없는 오류가 발생하였습니다."
-        }
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-    }
-
-    private suspend fun getSearchResults(query: String): List<SearchItems> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = NetworkClient.youtubeApiSearch.getSearchList(
-                    key = NetworkClient.AUTH_KEY,
-                    part = "snippet",
-                    safeSearch = "strict",
-                    type = "video",
-                    maxResults = 1, // 데이터 아끼기 위해 일단 3개
-                    query = query,
-                    videoCategoryId = "15" // Pets & Animals
-                )
-                response.items
-            } catch (e: Exception) {
-                e.printStackTrace()
-                emptyList()
-            }
+        viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
-
-
-//    private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
-//        /* CategoryId
-//        15 - Pets & Animals,   1 -  Film & Animation
-//        27 - Education,        31 - Anime/Animation
-//        37 - Family,           23 - Comedy
-//        */
-////        var videoIdData = youtubeApiSearch.getSearchList(
-////            AUTH_KEY,
-////            "snippet",
-////            "strict",
-////            "video",
-////            8, query,
-////            "15"
-////        )
-//
-////        val url = "https://img.youtube.com/vi/" + videoIdData.items[0].id.videoId + "/mqdefault.jpg"
-////        Glide.with(binding.root.context)
-////            .load(url)
-////            .into(binding.imageView)
-//
-//        /* 받은 snippet에서 썸네일을 가져와도 되지만 여백이 싫을때는 url값을 아래로 지정하면 여백없는 썸네일이 나옴
-//        https://img.youtube.com/vi + ${items.id.videoId} + /mqdefault.jpg
-//        */
-//    }
 
 }
 
