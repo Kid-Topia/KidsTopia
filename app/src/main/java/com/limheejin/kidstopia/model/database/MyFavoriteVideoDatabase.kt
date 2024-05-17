@@ -15,11 +15,10 @@ abstract class MyFavoriteVideoDatabase: RoomDatabase() {
     companion object {
         private var INSTANCE: MyFavoriteVideoDatabase? = null
 
-        fun getDatabase(application: Context) : MyFavoriteVideoDatabase {
-
+        fun getDatabase(context: Context) : MyFavoriteVideoDatabase {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(
-                    application, MyFavoriteVideoDatabase::class.java, "video_database")
+                    context.applicationContext, MyFavoriteVideoDatabase::class.java, "video_database")
                     .build()
             }
             return INSTANCE as MyFavoriteVideoDatabase
