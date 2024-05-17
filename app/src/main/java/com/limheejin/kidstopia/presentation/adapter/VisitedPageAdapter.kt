@@ -9,6 +9,10 @@ import com.limheejin.kidstopia.databinding.RvVisitedVideoBinding
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 
 class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>): RecyclerView.Adapter<VisitedPageAdapter.Holder>() {
+    interface ItemClick{
+        fun itemClick(id: String)
+    }
+    var itemClick: ItemClick? = null
     class Holder(private val binding: RvVisitedVideoBinding): RecyclerView.ViewHolder(binding.root) {
         val image = binding.visitedPageIv
         val channelId = binding.visitedPageChannelidTv
@@ -19,6 +23,10 @@ class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>):
     }
 
     override fun onBindViewHolder(holder: VisitedPageAdapter.Holder, position: Int) {
+        holder.itemView.setOnClickListener {
+            itemClick?.itemClick(items[position].id)
+        }
+
         Glide.with(holder.itemView.context)
             .load(items[position].thumbnails)
             .into(holder.image)
