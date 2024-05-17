@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.R
@@ -14,6 +15,8 @@ import com.limheejin.kidstopia.databinding.FragmentSearchBinding
 import com.limheejin.kidstopia.model.SearchItems
 import com.limheejin.kidstopia.presentation.adapter.RVSearchAdapter
 import com.limheejin.kidstopia.presentation.network.NetworkClient
+import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
+import com.limheejin.kidstopia.viewmodel.SearchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,6 +25,10 @@ import retrofit2.HttpException
 import java.lang.Exception
 
 class SearchFragment : Fragment() {
+    // 뷰모델 생성
+    private val viewModel by viewModels<SearchViewModel> {
+        PopularVideoViewModelFactory()
+    }
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchAdapter: RVSearchAdapter
 
@@ -43,13 +50,18 @@ class SearchFragment : Fragment() {
         setupRecyclerView()
         setEasySearchButton()
 
-        binding.etSearch.addTextChangedListener { editable ->
-            val query = editable.toString()
-            if (query.isNotEmpty()) {
-                searchVideos(query)
-            }
-            // MVVM 적용하고나서 다시 여쭤보기
+        viewModel.getSearchData.observe(viewLifecycleOwner) {
+            viewModel.getSearchData("123")
+
         }
+
+//        binding.etSearch.addTextChangedListener { editable ->
+//            val query = editable.toString()
+//            if (query.isNotEmpty()) {
+//                searchVideos(query)
+//            }
+//            // MVVM 적용하고나서 다시 여쭤보기
+//        }
 
 
 //        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -80,7 +92,7 @@ class SearchFragment : Fragment() {
                 bundle.putString("VideoId", videoId)
                 videoDetailFragment.arguments = bundle
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, videoDetailFragment)
+                    .replace(R.id.fl, videoDetailFragment)
                     .addToBackStack(null)
                     .commit()
             },
@@ -113,32 +125,32 @@ class SearchFragment : Fragment() {
 
     private fun searchVideos(query: String) {
         lifecycleScope.launch {
-//            try {
+            try {
                 val searchItems = getSearchResults(query)
                 searchAdapter.setItems(searchItems)
-//            } catch (e: Exception) {
-//                handleException(e) // 다양한 케이스의 예외처리를 위해 만듦
-//            }
+            } catch (e: Exception) {
+                handleException(e) // 다양한 케이스의 예외처리를 위해 만듦
+            }
         }
 
     }
 
-//    private fun handleException(exception: Exception) {
-//        val errorMessage = when (exception) {
-//            is IOException -> "IO Exception 오류가 발생하였습니다."
-//            is HttpException -> {
-//                when (exception.code()) {
-//                    400 -> "Bad Request 오류 발생"
-//                    401 -> "Unauthorized 오류 발생"
-//                    404 -> "not found 오류 발생"
-//                    else -> "알 수 없는 오류가 발생하였습니다."
-//                }
-//            }
-//
-//            else -> "알 수 없는 오류가 발생하였습니다."
-//        }
-//        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-//    }
+    private fun handleException(exception: Exception) {
+        val errorMessage = when (exception) {
+            is IOException -> "IO Exception 오류가 발생하였습니다."
+            is HttpException -> {
+                when (exception.code()) {
+                    400 -> "Bad Request 오류 발생"
+                    401 -> "Unauthorized 오류 발생"
+                    404 -> "not found 오류 발생"
+                    else -> "알 수 없는 오류가 발생하였습니다."
+                }
+            }
+
+            else -> "알 수 없는 오류가 발생하였습니다."
+        }
+        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+    }
 
     private suspend fun getSearchResults(query: String): List<SearchItems> {
         return withContext(Dispatchers.IO) {
@@ -148,7 +160,7 @@ class SearchFragment : Fragment() {
                     part = "snippet",
                     safeSearch = "strict",
                     type = "video",
-                    maxResults = 3, // 데이터 아끼기 위해 일단 3개
+                    maxResults = 1, // 데이터 아끼기 위해 일단 3개
                     query = query,
                     videoCategoryId = "15" // Pets & Animals
                 )
@@ -160,6 +172,31 @@ class SearchFragment : Fragment() {
         }
     }
 
-}
 
+//    private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
+//        /* CategoryId
+//        15 - Pets & Animals,   1 -  Film & Animation
+//        27 - Education,        31 - Anime/Animation
+//        37 - Family,           23 - Comedy
+//        */
+////        var videoIdData = youtubeApiSearch.getSearchList(
+////            AUTH_KEY,
+////            "snippet",
+////            "strict",
+////            "video",
+////            8, query,
+////            "15"
+////        )
+//
+////        val url = "https://img.youtube.com/vi/" + videoIdData.items[0].id.videoId + "/mqdefault.jpg"
+////        Glide.with(binding.root.context)
+////            .load(url)
+////            .into(binding.imageView)
+//
+//        /* 받은 snippet에서 썸네일을 가져와도 되지만 여백이 싫을때는 url값을 아래로 지정하면 여백없는 썸네일이 나옴
+//        https://img.youtube.com/vi + ${items.id.videoId} + /mqdefault.jpg
+//        */
+//    }
+
+}
 
