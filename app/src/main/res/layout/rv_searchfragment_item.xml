@@ -55,7 +55,9 @@
             android:maxLines="1"
             android:text="가정의 달 특집 핑크퐁 아기상어와..."
             android:textColor="@color/darkgrey"
-            android:textSize="23sp"
+            android:fontFamily="@font/gangwonmodubold"
+
+            android:textSize="27sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -68,7 +70,8 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="5월은 푸르구나 우리들은 자란다"
-            android:textColor="@color/light_grey"
+            android:fontFamily="@font/gangwonmodulight"
+            android:textColor="#9E9E9E"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
