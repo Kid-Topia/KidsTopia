@@ -28,8 +28,6 @@ class MyVideoFragment : Fragment() {
         MyVideoViewModelFactory(requireContext())
     }
 
-    lateinit var items: MutableLiveData<MutableList<MyFavoriteVideoEntity>>
-    lateinit var testData : PopularData
     private var param1: String? = null
     private var param2: String? = null
 
