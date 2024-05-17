@@ -1,5 +1,6 @@
 package com.limheejin.kidstopia.presentation.adapter
 
+import android.content.ClipData.Item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +9,10 @@ import com.limheejin.kidstopia.databinding.RvFavoriteVideoBinding
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 
 class MyFavoriteVideoAdapter(private val items: MutableList<MyFavoriteVideoEntity>): RecyclerView.Adapter<MyFavoriteVideoAdapter.Holder>() {
+    interface ItemClick{
+        fun itemClick(id: String)
+    }
+    var itemClick: ItemClick? = null
     class Holder(private val binding: RvFavoriteVideoBinding): RecyclerView.ViewHolder(binding.root) {
         val image = binding.favoriteVideoIv
         val channelId = binding.favoriteVideoChannelIdTv
@@ -23,6 +28,10 @@ class MyFavoriteVideoAdapter(private val items: MutableList<MyFavoriteVideoEntit
     }
 
     override fun onBindViewHolder(holder: MyFavoriteVideoAdapter.Holder, position: Int) {
+        holder.itemView.setOnClickListener {
+            itemClick?.itemClick(items[position].id)
+        }
+
         Glide.with(holder.itemView.context)
             .load(items[position].thumbnails)
             .into(holder.image)
