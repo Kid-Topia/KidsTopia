@@ -1,24 +1,33 @@
 package com.limheejin.kidstopia.presentation.fragment
 
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.limheejin.kidstopia.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.limheejin.kidstopia.databinding.FragmentMyVideoBinding
+import com.limheejin.kidstopia.model.PopularData
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
+import com.limheejin.kidstopia.presentation.adapter.MyFavoriteVideoAdapter
+import com.limheejin.kidstopia.presentation.adapter.VisitedPageAdapter
+import com.limheejin.kidstopia.viewmodel.MyVideoViewModel
+import com.limheejin.kidstopia.viewmodel.MyVideoViewModelFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MyVideoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MyVideoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+    private lateinit var binding: FragmentMyVideoBinding
+    private val myVideoViewModel by viewModels<MyVideoViewModel> {
+        MyVideoViewModelFactory(Application())
+    }
+
+    lateinit var items: MutableLiveData<MutableList<MyFavoriteVideoEntity>>
+    lateinit var testData : PopularData
     private var param1: String? = null
     private var param2: String? = null
 
@@ -33,21 +42,34 @@ class MyVideoFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_video, container, false)
+        binding = FragmentMyVideoBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        myVideoViewModel.getItems.observe(viewLifecycleOwner) { items ->
+            myVideoViewModel.getItems()
+            val myFavoriteVideoAdapter = MyFavoriteVideoAdapter(items.filter { it.classify == "isLiked" }.toMutableList())
+            val visitedPageAdapter = VisitedPageAdapter(items.filter { it.classify == "isVisited" }.toMutableList())
+
+            binding.apply {
+                favoriteVideoRv.adapter = myFavoriteVideoAdapter
+                visitedPageRv.adapter = visitedPageAdapter
+                favoriteVideoRv.layoutManager = LinearLayoutManager(requireContext())
+                visitedPageRv.layoutManager =  LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            }
+
+
+        }
+
+
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyVideoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             MyVideoFragment().apply {
