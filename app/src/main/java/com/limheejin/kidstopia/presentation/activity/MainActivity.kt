@@ -23,9 +23,6 @@ import com.limheejin.kidstopia.presentation.fragment.VideoDetailFragment
 import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiSearch
-import com.limheejin.kidstopia.repository.Repository
-import com.limheejin.kidstopia.viewmodel.PopularVideoViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
