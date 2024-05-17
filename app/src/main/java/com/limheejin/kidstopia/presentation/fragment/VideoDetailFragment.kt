@@ -1,53 +1,138 @@
 package com.limheejin.kidstopia.presentation.fragment
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.R
+import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
+import com.limheejin.kidstopia.model.PopularData
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
+import com.limheejin.kidstopia.presentation.network.NetworkClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM1 = "VideoId"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [VideoDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class VideoDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var videoId: String? = null
     private var param2: String? = null
+
+    private val binding by lazy {
+        FragmentVideoDetailBinding.inflate(layoutInflater)
+    }
+
+    private lateinit var dataList: PopularData
+    private lateinit var dao: MyFavoriteVideoDAO
+    private lateinit var deferred: Deferred<PopularData>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            videoId = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        initData()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_detail, container, false)
+    ): View {
+        initView()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initListener()
+    }
+
+    private fun initData() {
+        deferred = CoroutineScope(Dispatchers.IO).async {
+            return@async NetworkClient.youtubeApiVideo.getVideoData(
+                NetworkClient.AUTH_KEY,
+                "snippet, contentDetails",
+                "9fdr8ah-4A4" // videoId
+            )
+        }
+        dao = MyFavoriteVideoDatabase.getDatabase(requireContext()).getDao()
+    }
+
+    private fun initView() = lifecycleScope.launch {
+        dataList = deferred.await()
+        val snippet = dataList.items[0].snippet
+
+        with(binding){
+            tvChannelName.text = snippet.channelTitle
+            tvTitle.text = snippet.title
+            tvDescription.text = snippet.description
+            Glide.with(ivThumbnail.context)
+                .load(snippet.thumbnails.medium.url)
+                .into(ivThumbnail)
+        }
+    }
+
+    private fun initListener() = with(binding) {
+
+        btnPlay.setOnClickListener {
+            Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
+        }
+
+        btnLikeImg.setOnClickListener {
+            val id = dataList.items[0].id
+            val channelTitle = dataList.items[0].snippet.channelTitle
+            val title = dataList.items[0].snippet.title
+            val thumbnails = dataList.items[0].snippet.thumbnails.high.url
+            val date = LocalDateTime.now()
+            val classify = "isLiked"
+            var selector = btnLikeImg.isSelected
+
+            selector = selector != true
+
+            if (selector) {
+                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT)
+                    .show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    dao.insertVideo(
+                        MyFavoriteVideoEntity(id,title,channelTitle,thumbnails,date.toString(),classify
+                        )
+                    )
+                    Log.d("checkDb", "${dao.getAllVideo()}")
+                }
+            } else {
+                Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT)
+                    .show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    dao.deleteVideo(id)
+                    Log.d("checkDb", "${dao.getAllVideo()}")
+                }
+            }
+
+        }
+
+        btnShareImg.setOnClickListener {
+            Toast.makeText(context, R.string.toast_detailfragment_share, Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment VideoDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             VideoDetailFragment().apply {

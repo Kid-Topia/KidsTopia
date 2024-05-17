@@ -15,7 +15,7 @@ abstract class MyFavoriteVideoDatabase: RoomDatabase() {
     companion object {
         private var INSTANCE: MyFavoriteVideoDatabase? = null
 
-        fun getDatabase(application: Application) : MyFavoriteVideoDatabase {
+        fun getDatabase(application: Context) : MyFavoriteVideoDatabase {
 
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(
