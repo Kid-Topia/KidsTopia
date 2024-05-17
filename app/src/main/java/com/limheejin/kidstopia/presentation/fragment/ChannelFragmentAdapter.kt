@@ -13,7 +13,7 @@ import com.limheejin.kidstopia.model.PopularItems
 class ChannelFragmentAdapter(private val context: Context) :
     RecyclerView.Adapter<ChannelFragmentAdapter.ChannelViewHolder>() {
 
-    var itemsChannel = ArrayList<PopularItems>()
+    var itemsChannel : MutableList<PopularItems> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelViewHolder {
         val binding = ChannelItemBinding.
         inflate(LayoutInflater.from(parent.context),
@@ -44,10 +44,10 @@ class ChannelFragmentAdapter(private val context: Context) :
             }
 
     }
-    fun updateData(newItems: List<PopularItems>) {
-        itemsChannel.clear()
-        itemsChannel.addAll(newItems)
-        notifyDataSetChanged()
-    }
+//    fun updateData(newItems: List<PopularItems>) {
+//        itemsChannel.clear()
+//        itemsChannel.addAll(newItems)
+//        notifyDataSetChanged()
+//    }
 
 }

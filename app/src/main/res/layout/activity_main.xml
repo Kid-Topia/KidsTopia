@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.activity.MainActivity">
 
+
     <FrameLayout
         android:id="@+id/fl"
         android:layout_width="match_parent"
@@ -37,7 +38,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         app:itemActiveIndicatorStyle="@null"
         app:labelVisibilityMode="unlabeled"
@@ -46,5 +47,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

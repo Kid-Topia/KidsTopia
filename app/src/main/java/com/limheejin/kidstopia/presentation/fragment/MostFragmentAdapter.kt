@@ -43,9 +43,9 @@ class MostFragmentAdapter(private val context: Context ) :
                 .into(binding.mostImg)
         }
     }
-    fun updateData(newItems: List<PopularItems>){
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
-    }
+//    fun updateData(newItems: List<PopularItems>){
+//        items.clear()
+//        items.addAll(newItems)
+//        notifyDataSetChanged()
+//    }
 }
