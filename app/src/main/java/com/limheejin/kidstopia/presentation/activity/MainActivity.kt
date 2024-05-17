@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
@@ -19,6 +20,7 @@ import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.fragment.HomeFragment
 import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
 import com.limheejin.kidstopia.presentation.fragment.SearchFragment
+import com.limheejin.kidstopia.presentation.fragment.VideoDetailFragment
 import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
 import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
@@ -53,13 +55,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 //        binding.button.setOnClickListener {
 //            popularVideoCommunicateNetwork()
 //        }
-//
 //        binding.button2.setOnClickListener {
 //            // dao.deleteVideo("Detail이 받은 비디오ID값")
+//            }
 //        }
-//        searchCommunicateNetwork("game")
-//        popularVideoCommunicateNetwork()
-//        channelsCommunicateNetwork()
 
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
