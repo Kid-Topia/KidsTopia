@@ -14,7 +14,6 @@ interface PopularVideoInterface {
         @Query("part") part: String,
         @Query("chart") chart: String,
         @Query("maxResults") maxResults: Int,
-        @Query("regionCode") regionCode: String,
 
     ): PopularData
 }
