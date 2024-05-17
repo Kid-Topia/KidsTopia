@@ -103,37 +103,10 @@ class HomeFragment : Fragment() {
 
     }
 
-//    private fun ctegotyCommunicateNetwork() = lifecycleScope.launch {
+//    private fun categotyCommunicateNetwork() = lifecycleScope.launch {
 //
 //    }
 
 
-//    private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
-//        testData = NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
-//            NetworkClient.AUTH_KEY,
-//            "snippet, contentDetails",
-//            "mostPopular",
-//            10,
-//        )
-//
-//        val id = items.items[1].id
-//        val channelId = items.items[1].snippet.channelId
-//        val title = items.items[1].snippet.title
-//        val thumbnails = items.items[1].snippet.thumbnails.high.url
-//        val date = LocalDateTime.now()
-//        val classify = "isLiked"
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            dao.insertVideo(MyFavoriteVideoEntity(id, title, channelId, thumbnails, date.toString(), classify))
-//            Log.d("checkDb", "${dao.getAllVideo()}")
-//        }
-//    }
-//
-//    private fun channelsCommunicateNetwork() = lifecycleScope.launch {
-//        val data = NetworkClient.youtubeApiChannels.getChannels(
-//            NetworkClient.AUTH_KEY,
-//            "snippet",
-//            "UCL6JmiMXKoXS6bpP1D3bk8g"
-//        )
-//    }
+
 }

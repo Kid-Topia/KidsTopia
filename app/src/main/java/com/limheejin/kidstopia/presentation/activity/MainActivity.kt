@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
@@ -16,23 +15,15 @@ import com.limheejin.kidstopia.databinding.ActivityMainBinding
 import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.fragment.HomeFragment
 import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
 import com.limheejin.kidstopia.presentation.fragment.SearchFragment
-import com.limheejin.kidstopia.presentation.fragment.VideoDetailFragment
-import com.limheejin.kidstopia.presentation.network.NetworkClient.AUTH_KEY
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiChannels
-import com.limheejin.kidstopia.presentation.network.NetworkClient.youtubeApiPopularVideo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    lateinit var testData : PopularData
+    lateinit var testData: PopularData
     lateinit var dao: MyFavoriteVideoDAO
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -64,7 +55,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
     }
 
-    private fun searchCommunicateNetwork (query: String) = lifecycleScope.launch {
+    private fun searchCommunicateNetwork(query: String) = lifecycleScope.launch {
         /* CategoryId
         15 - Pets & Animals,   1 -  Film & Animation
         27 - Education,        31 - Anime/Animation
@@ -89,23 +80,43 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         */
     }
 
-
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
-            R.id.mnu_home -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commitAllowingStateLoss()
-                return true
-            }
-            R.id.mnu_search -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fl, SearchFragment()).commitAllowingStateLoss()
-                return true
-            }
-            R.id.mnu_user -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fl, MyVideoFragment()).commitAllowingStateLoss()
-                return true
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+        supportFragmentManager.fragments.forEach { fragment ->
+            if (fragment.isVisible) {
+                fragmentTransaction.hide(fragment)
             }
         }
-        return false
+
+
+        when (item.itemId) {
+            R.id.mnu_home -> {
+                val homeFragment =
+                    supportFragmentManager.findFragmentByTag("HOME") ?: HomeFragment().apply {
+                        fragmentTransaction.add(R.id.fl, this, "HOME")
+                    }
+                fragmentTransaction.show(homeFragment)
+            }
+
+            R.id.mnu_search -> {
+                val searchFragment =
+                    supportFragmentManager.findFragmentByTag("SEARCH") ?: SearchFragment().apply {
+                        fragmentTransaction.add(R.id.fl, this, "SEARCH")
+                    }
+                fragmentTransaction.show(searchFragment)
+            }
+
+            R.id.mnu_user -> {
+                val myVideoFragment = supportFragmentManager.findFragmentByTag("MY_VIDEO")
+                    ?: MyVideoFragment().apply {
+                        fragmentTransaction.add(R.id.fl, this, "MY_VIDEO")
+                    }
+                fragmentTransaction.show(myVideoFragment)
+            }
+        }
+        fragmentTransaction.commitAllowingStateLoss()
+        return true
     }
 }
+
