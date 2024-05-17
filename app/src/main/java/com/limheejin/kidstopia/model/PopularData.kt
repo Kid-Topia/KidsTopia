@@ -25,7 +25,6 @@ data class PopularSnippet(
     val categoryId: String
 )
 
-
 /* 필요한 데이터는 데이터 클래스에 추가해서 가져다 써주세요
 JSON 구조
 {

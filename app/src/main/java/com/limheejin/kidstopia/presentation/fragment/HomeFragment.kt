@@ -5,56 +5,135 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.limheejin.kidstopia.R
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.limheejin.kidstopia.databinding.FragmentHomeBinding
+import com.limheejin.kidstopia.model.PopularData
+import com.limheejin.kidstopia.model.PopularItems
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
+import com.limheejin.kidstopia.presentation.network.NetworkClient
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+    private lateinit var layoutManagerMost: LinearLayoutManager
+    private lateinit var layoutManagerCategotry: LinearLayoutManager
+    private lateinit var layoutManagerChannel: LinearLayoutManager
+
+    private lateinit var mostAdapter: MostAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var channelAdapter: ChannelAdapter
+
+    lateinit var mostitem : PopularData
+    lateinit var dao: MyFavoriteVideoDAO
+    lateinit var ItemChannel: PopularData
+    lateinit var ItemCategoty: PopularData
+
+    override  fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater,container,false)
+        val view = binding.root
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        // 수평 스크롤
+        layoutManagerMost = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.HORIZONTAL,false)
+        layoutManagerCategotry = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.HORIZONTAL,false)
+        layoutManagerChannel = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.HORIZONTAL,false)
+
+        //어뎁터 연결
+        mostAdapter= MostAdapter(requireContext())
+        categoryAdapter= CategoryAdapter(requireContext())
+        channelAdapter = ChannelAdapter(requireContext())
+
+        binding.mostVidio.layoutManager = layoutManagerMost
+        binding.mostVidio.adapter = mostAdapter
+
+        binding.category.layoutManager = layoutManagerCategotry
+//        binding.category.adapter = adapterCategory
+
+        binding.channel.layoutManager = layoutManagerChannel
+        binding.channel.adapter = channelAdapter
+
+        binding.mostVidio.adapter = mostAdapter
+        mostAdapter.items  = mutableListOf<PopularItems>()
+        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
+
+        popularVideoCommunicateNetwork()
+//        channelsCommunicateNetwork()
     }
+
+    private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
+        mostitem = NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
+            NetworkClient.AUTH_KEY,
+            "snippet, contentDetails",
+            "mostPopular",
+            10,
+            "KR"
+        )
+
+        mostAdapter.items = mostitem.items
+        mostAdapter.notifyDataSetChanged()
+
+    }
+    private fun channelsCommunicateNetwork() = lifecycleScope.launch {
+        ItemChannel = NetworkClient.youtubeApiChannels.getChannels(
+            NetworkClient.AUTH_KEY,
+            "snippet",
+            "UCL6JmiMXKoXS6bpP1D3bk8g"
+        )
+
+        binding.channel.adapter = channelAdapter
+        channelAdapter.itemsChannel  = ItemChannel.items
+        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
+
+    }
+
+//    private fun ctegotyCommunicateNetwork() = lifecycleScope.launch {
+//
+//    }
+
+
+//    private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
+//        testData = NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
+//            NetworkClient.AUTH_KEY,
+//            "snippet, contentDetails",
+//            "mostPopular",
+//            10,
+//        )
+//
+//        val id = items.items[1].id
+//        val channelId = items.items[1].snippet.channelId
+//        val title = items.items[1].snippet.title
+//        val thumbnails = items.items[1].snippet.thumbnails.high.url
+//        val date = LocalDateTime.now()
+//        val classify = "isLiked"
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//            dao.insertVideo(MyFavoriteVideoEntity(id, title, channelId, thumbnails, date.toString(), classify))
+//            Log.d("checkDb", "${dao.getAllVideo()}")
+//        }
+//    }
+//
+//    private fun channelsCommunicateNetwork() = lifecycleScope.launch {
+//        val data = NetworkClient.youtubeApiChannels.getChannels(
+//            NetworkClient.AUTH_KEY,
+//            "snippet",
+//            "UCL6JmiMXKoXS6bpP1D3bk8g"
+//        )
+//    }
 }
