@@ -17,3 +17,9 @@ interface SearchInterface {
         @Query("videoCategoryId") videoCategoryId: String = "15"
     ): SearchData
 }
+
+//        /* CategoryId
+//        15 - Pets & Animals,   1 -  Film & Animation
+//        27 - Education,        31 - Anime/Animation
+//        37 - Family,           23 - Comedy
+//        */
