@@ -1,4 +1,4 @@
-package com.limheejin.kidstopia.presentation.fragment
+package com.limheejin.kidstopia.presentation.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
