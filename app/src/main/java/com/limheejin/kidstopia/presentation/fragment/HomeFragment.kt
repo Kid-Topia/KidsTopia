@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.databinding.FragmentHomeBinding
+import com.limheejin.kidstopia.model.CategoryData
 import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.ChannelData
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
@@ -28,13 +29,14 @@ class HomeFragment : Fragment() {
     private lateinit var layoutManagerCategotry: LinearLayoutManager
     private lateinit var layoutManagerChannel: LinearLayoutManager
 
-    private lateinit var adapterMost: MostFragmentAdapter
-    private lateinit var adapterCategoty: CategoryFragmentAdapter
-    private lateinit var adapterChannel: ChannelFragmentAdapter
+    private lateinit var adapterMost: MostAdapter
+    private lateinit var adapterCategoty: CategoryAdapter
+    private lateinit var adapterChannel: ChannelAdapter
 
     lateinit var mostitem : PopularData
     lateinit var dao: MyFavoriteVideoDAO
     lateinit var ItemChannel: ChannelData
+    lateinit var ItemCategoty: CategoryData
 
 
 
@@ -60,9 +62,9 @@ class HomeFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL,false)
 
         //어뎁터 연결
-        adapterMost = MostFragmentAdapter(requireContext())
-        adapterCategoty = CategoryFragmentAdapter(requireContext())
-        adapterChannel = ChannelFragmentAdapter(requireContext())
+        adapterMost = MostAdapter(requireContext())
+        adapterCategoty = CategoryAdapter(requireContext())
+        adapterChannel = ChannelAdapter(requireContext())
 
         binding.mostVidio.layoutManager = layoutManagerMost
         binding.mostVidio.adapter = adapterMost
@@ -72,6 +74,8 @@ class HomeFragment : Fragment() {
 
         binding.channel.layoutManager = layoutManagerChannel
         binding.channel.adapter = adapterChannel
+
+        binding.mostVidio.setOnClickListener {  }
 
         popularVideoCommunicateNetwork()
         channelsCommunicateNetwork()
@@ -113,6 +117,10 @@ class HomeFragment : Fragment() {
         )
 
         binding.channel.adapter = adapterChannel
+    }
+
+    private fun ctegotyCommunicateNetwork() = lifecycleScope.launch {
+
     }
 
 

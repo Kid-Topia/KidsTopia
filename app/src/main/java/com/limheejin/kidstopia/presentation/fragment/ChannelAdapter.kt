@@ -10,8 +10,8 @@ import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.ChannelItemBinding
 import com.limheejin.kidstopia.model.PopularItems
 
-class ChannelFragmentAdapter(private val context: Context) :
-    RecyclerView.Adapter<ChannelFragmentAdapter.ChannelViewHolder>() {
+class ChannelAdapter(private val context: Context) :
+    RecyclerView.Adapter<ChannelAdapter.ChannelViewHolder>() {
 
     var itemsChannel : MutableList<PopularItems> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelViewHolder {

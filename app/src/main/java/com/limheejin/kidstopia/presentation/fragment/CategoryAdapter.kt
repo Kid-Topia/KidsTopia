@@ -1,10 +1,8 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.content.Context
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 
-class CategoryFragmentAdapter(private val context: Context) {
+class CategoryAdapter(private val context: Context) {
 //    RecyclerView.Adapter<CategoryFragmentAdapter.CategoryViewHolder>(){
 //
 //
