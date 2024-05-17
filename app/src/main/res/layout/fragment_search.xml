@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:background="#00FFFFFF"
+            android:fontFamily="@font/pretendardmedium"
             android:hint="검색 내용을 입력해 볼까요?"
             android:imeOptions="actionSearch"
             android:inputType="text"
@@ -66,11 +67,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_search"
+                android:fontFamily="@font/pretendardmedium"
                 android:paddingLeft="16dp"
                 android:paddingTop="3dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="3dp"
                 android:text="키즈"
+
                 android:textColor="@color/darkgrey"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -81,11 +84,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/bg_search"
+                android:fontFamily="@font/pretendardmedium"
                 android:paddingLeft="16dp"
                 android:paddingTop="3dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="3dp"
                 android:text="수면음악"
+
                 android:textColor="@color/darkgrey"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -96,6 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/bg_search"
+                android:fontFamily="@font/pretendardmedium"
                 android:paddingLeft="16dp"
                 android:paddingTop="3dp"
                 android:paddingRight="16dp"
@@ -116,6 +122,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_easySearch_layout" />
