@@ -47,7 +47,7 @@
         android:id="@+id/visit_page_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="방문 페이지"
         android:textSize="15sp"
@@ -61,6 +61,8 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/visit_page_tv" />
@@ -69,7 +71,7 @@
         android:id="@+id/favorite_video_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="18dp"
         android:text="재밌게 봤어요"
         android:textSize="15sp"
@@ -81,11 +83,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favorite_video_rv"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/favorite_video_tv" />
 
 
