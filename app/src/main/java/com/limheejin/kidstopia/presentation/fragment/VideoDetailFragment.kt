@@ -48,7 +48,8 @@ class VideoDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        initView()
+        initData()
+//        initView()
         return binding.root
     }
 
@@ -56,18 +57,49 @@ class VideoDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListener()
     }
-//
-//    private fun initData() = lifecycleScope.launch {
-//        dataList = NetworkClient.youtubeApiVideo.getVideoData(
-//            NetworkClient.AUTH_KEY,
-//            "snippet, contentDetails",
-//            "6COmYeLsz4c"
-//        )
-//    }
 
-    private fun initView() = with(binding){
+    private fun initData() = lifecycleScope.launch {
+        dataList = NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
+            NetworkClient.AUTH_KEY,
+            "snippet, contentDetails",
+            "chart",
+            10
+        )
+        val id = dataList.items[0].id
+        val channelId = dataList.items[0].snippet.channelId
+        val title = dataList.items[0].snippet.title
+        val thumbnails = dataList.items[0].snippet.thumbnails.high.url
+        val date = LocalDateTime.now()
+        val classify = "isLiked"
+
+        val snippet = dataList.items[0].snippet
+
+        binding.tvChannelName.text = snippet.channelId
+        binding.tvTitle.text = snippet.title
+        binding.tvDescription.text = snippet.description
+        Glide.with(binding.ivThumbnail.context)
+            .load(snippet.thumbnails)
+            .into(binding.ivThumbnail)
 
         CoroutineScope(Dispatchers.IO).launch {
+            dao.insertVideo(
+                MyFavoriteVideoEntity(
+                    id,
+                    title,
+                    channelId,
+                    thumbnails,
+                    date.toString(),
+                    classify
+                )
+            )
+            Log.d("checkDb", "${dao.getAllVideo()}")
+        }
+    }
+
+    private fun initView() = with(binding) {
+
+        CoroutineScope(Dispatchers.IO).launch {
+
             dataList = NetworkClient.youtubeApiVideo.getVideoData(
                 NetworkClient.AUTH_KEY,
                 "snippet, contentDetails",
@@ -84,11 +116,9 @@ class VideoDetailFragment : Fragment() {
                 .into(ivThumbnail)
         }
 
-
-
     }
 
-    private fun initListener() = with(binding){
+    private fun initListener() = with(binding) {
 
         btnPlay.setOnClickListener {
             Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
@@ -106,13 +136,15 @@ class VideoDetailFragment : Fragment() {
             selector = selector != true
 
             if (selector) {
-                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT)
+                    .show()
                 CoroutineScope(Dispatchers.IO).launch {
-                    dao.insertVideo(MyFavoriteVideoEntity(id, title, channelId, thumbnails, date.toString(), classify))
+                    dao.insertVideo(MyFavoriteVideoEntity(id,title,channelId,thumbnails,date.toString(),classify))
                     Log.d("checkDb", "${dao.getAllVideo()}")
                 }
             } else {
-                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT)
+                    .show()
                 CoroutineScope(Dispatchers.IO).launch {
                     dao.deleteVideo(id)
                     Log.d("checkDb", "${dao.getAllVideo()}")
@@ -124,7 +156,6 @@ class VideoDetailFragment : Fragment() {
         btnShareImg.setOnClickListener {
             Toast.makeText(context, R.string.toast_detailfragment_share, Toast.LENGTH_SHORT).show()
         }
-
     }
 
     companion object {
