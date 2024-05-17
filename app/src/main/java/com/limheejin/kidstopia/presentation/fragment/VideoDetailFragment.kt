@@ -1,53 +1,143 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.R
+import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
+import com.limheejin.kidstopia.model.PopularData
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
+import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
+import com.limheejin.kidstopia.presentation.network.NetworkClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM1 = "VideoId"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [VideoDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class VideoDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var videoId: String? = null
     private var param2: String? = null
+
+    private lateinit var dataList: PopularData
+    private lateinit var deferred: Deferred<PopularData>
+
+    private val binding by lazy {
+        FragmentVideoDetailBinding.inflate(layoutInflater)
+    }
+
+    private val dao by lazy {
+        MyFavoriteVideoDatabase.getDatabase(requireContext()).getDao()
+    }
+    private val snippet by lazy {
+        dataList.items[0].snippet
+    }
+    private val dateString by lazy {
+        LocalDateTime.now().toString()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            videoId = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        initData()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_detail, container, false)
+    ): View {
+        initView()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initListener()
+    }
+
+    private fun initData() { // bundle로 받아온 videoId로 Video API에서 동영상 정보 받아오기
+        deferred = CoroutineScope(Dispatchers.IO).async {
+            return@async NetworkClient.youtubeApiVideo.getVideoData(
+                NetworkClient.AUTH_KEY,
+                "snippet, contentDetails",
+                videoId?:""
+            )
+        }
+    }
+
+    private fun initView() = lifecycleScope.launch {
+        dataList = deferred.await() // 받아온 동영상 정보 처리가 끝난 후에 dataList에 할당
+
+        with(binding){ // 받아온 동영상 정보로 View 설정
+            tvChannelName.text = snippet.channelTitle
+            tvTitle.text = snippet.title
+            tvDescription.text = snippet.description
+            Glide.with(ivThumbnail.context)
+                .load(snippet.thumbnails.medium.url)
+                .into(ivThumbnail)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                MyFavoriteVideoEntity(
+                    videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited"
+                )
+            )
+            Log.d("checkDb", "${dao.getAllVideo()}")
+        }
+    }
+
+    private fun initListener() = with(binding) {
+
+        btnPlay.setOnClickListener {
+            Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
+        }
+
+        btnLikeImg.setOnClickListener {
+            btnLikeImg.isSelected = btnLikeImg.isSelected != true
+
+            if (btnLikeImg.isSelected) { // 한 번 누르면 재밌게 본 목록에 동영상 저장 및 토스트 실행
+                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    dao.insertVideo(
+                        MyFavoriteVideoEntity(
+                            videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isLiked"
+                        )
+                    )
+                    Log.d("checkDb", "${dao.getAllVideo()}")
+                }
+            } else { // 저장 상태로 또 누르면 재밌게 본 목록에서 동영상 삭제 및 토스트 실행
+                Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT)
+                    .show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    dao.deleteVideo(videoId?:"")
+                    Log.d("checkDb", "${dao.getAllVideo()}")
+                }
+            }
+
+        }
+
+        btnShareImg.setOnClickListener { // 공유 버튼 클릭 시 실행 (미구현)
+            Toast.makeText(context, R.string.toast_detailfragment_share, Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment VideoDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             VideoDetailFragment().apply {

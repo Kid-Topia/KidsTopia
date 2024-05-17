@@ -60,18 +60,18 @@ class HomeFragment : Fragment() {
         categoryAdapter= CategoryAdapter(requireContext())
         channelAdapter = ChannelAdapter(requireContext())
 
-        binding.mostVidio.layoutManager = layoutManagerMost
-        binding.mostVidio.adapter = mostAdapter
+        binding.homeMostVidio.layoutManager = layoutManagerMost
+        binding.homeMostVidio.adapter = mostAdapter
 
-        binding.category.layoutManager = layoutManagerCategotry
-//        binding.category.adapter = adapterCategory
+        binding.hoemCategory.layoutManager = layoutManagerCategotry
+//        binding.hoemCategory.adapter = adapterCategory
 
-        binding.channel.layoutManager = layoutManagerChannel
-        binding.channel.adapter = channelAdapter
+        binding.homeChannel.layoutManager = layoutManagerChannel
+        binding.homeChannel.adapter = channelAdapter
 
-        binding.mostVidio.adapter = mostAdapter
+        binding.homeMostVidio.adapter = mostAdapter
         mostAdapter.items  = mutableListOf<PopularItems>()
-        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
+        binding.homeMostVidio.layoutManager = LinearLayoutManager(requireContext())
 
         popularVideoCommunicateNetwork()
 //        channelsCommunicateNetwork()
@@ -97,9 +97,9 @@ class HomeFragment : Fragment() {
             "UCL6JmiMXKoXS6bpP1D3bk8g"
         )
 
-        binding.channel.adapter = channelAdapter
+        binding.homeChannel.adapter = channelAdapter
         channelAdapter.itemsChannel  = ItemChannel.items
-        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
+        binding.homeMostVidio.layoutManager = LinearLayoutManager(requireContext())
 
     }
 
