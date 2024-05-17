@@ -5,6 +5,7 @@
 
     <string name="toast_detailfragment_play">동영상을 재생할게요!</string>
     <string name="toast_detailfragment_like">재밌게 본 영상에 추가했어요!</string>
+    <string name="toast_detailfragment_dislike">재밌게 본 영상에서 삭제했어요..!</string>
     <string name="toast_detailfragment_share">영상을 공유했어요!</string>
 
 </resources>
