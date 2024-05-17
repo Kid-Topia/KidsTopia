@@ -1,7 +1,6 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,16 +8,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.databinding.FragmentHomeBinding
-import com.limheejin.kidstopia.model.CategoryData
 import com.limheejin.kidstopia.model.PopularData
-import com.limheejin.kidstopia.model.ChannelData
+import com.limheejin.kidstopia.model.PopularItems
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.network.NetworkClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 class HomeFragment : Fragment() {
 
@@ -29,16 +23,14 @@ class HomeFragment : Fragment() {
     private lateinit var layoutManagerCategotry: LinearLayoutManager
     private lateinit var layoutManagerChannel: LinearLayoutManager
 
-    private lateinit var adapterMost: MostAdapter
-    private lateinit var adapterCategoty: CategoryAdapter
-    private lateinit var adapterChannel: ChannelAdapter
+    private lateinit var mostAdapter: MostAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var channelAdapter: ChannelAdapter
 
     lateinit var mostitem : PopularData
     lateinit var dao: MyFavoriteVideoDAO
-    lateinit var ItemChannel: ChannelData
-    lateinit var ItemCategoty: CategoryData
-
-
+    lateinit var ItemChannel: PopularData
+    lateinit var ItemCategoty: PopularData
 
     override  fun onCreateView(
         inflater: LayoutInflater,
@@ -47,11 +39,13 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
         val view = binding.root
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         // 수평 스크롤
         layoutManagerMost = LinearLayoutManager(requireContext(),
@@ -62,25 +56,26 @@ class HomeFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL,false)
 
         //어뎁터 연결
-        adapterMost = MostAdapter(requireContext())
-        adapterCategoty = CategoryAdapter(requireContext())
-        adapterChannel = ChannelAdapter(requireContext())
+        mostAdapter= MostAdapter(requireContext())
+        categoryAdapter= CategoryAdapter(requireContext())
+        channelAdapter = ChannelAdapter(requireContext())
 
         binding.mostVidio.layoutManager = layoutManagerMost
-        binding.mostVidio.adapter = adapterMost
+        binding.mostVidio.adapter = mostAdapter
 
         binding.category.layoutManager = layoutManagerCategotry
 //        binding.category.adapter = adapterCategory
 
         binding.channel.layoutManager = layoutManagerChannel
-        binding.channel.adapter = adapterChannel
+        binding.channel.adapter = channelAdapter
 
-        binding.mostVidio.setOnClickListener {  }
+        binding.mostVidio.adapter = mostAdapter
+        mostAdapter.items  = mutableListOf<PopularItems>()
+        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
 
         popularVideoCommunicateNetwork()
-        channelsCommunicateNetwork()
+//        channelsCommunicateNetwork()
     }
-
 
     private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
         mostitem = NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
@@ -91,24 +86,10 @@ class HomeFragment : Fragment() {
             "KR"
         )
 
-        val id = mostitem.items[0].id
-        val channelId = mostitem.items[0].snippet.channelId
-        val title = mostitem.items[0].snippet.title
-        val thumbnails = mostitem.items[0].snippet.thumbnails.high.url
-        val date = LocalDateTime.now()
-        val classify = "isLiked"
+        mostAdapter.items = mostitem.items
+        mostAdapter.notifyDataSetChanged()
 
-        binding.mostVidio.adapter = adapterMost
-        adapterMost.items  = mostitem.items
-        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
-
-        CoroutineScope(Dispatchers.IO).launch {
-            dao.insertVideo(MyFavoriteVideoEntity(id, title, channelId, thumbnails, date.toString(), classify))
-            Log.d("checkDb", "${dao.getAllVideo()}")
-        }
     }
-
-
     private fun channelsCommunicateNetwork() = lifecycleScope.launch {
         ItemChannel = NetworkClient.youtubeApiChannels.getChannels(
             NetworkClient.AUTH_KEY,
@@ -116,13 +97,15 @@ class HomeFragment : Fragment() {
             "UCL6JmiMXKoXS6bpP1D3bk8g"
         )
 
-        binding.channel.adapter = adapterChannel
+        binding.channel.adapter = channelAdapter
+        channelAdapter.itemsChannel  = ItemChannel.items
+        binding.mostVidio.layoutManager = LinearLayoutManager(requireContext())
+
     }
 
-    private fun ctegotyCommunicateNetwork() = lifecycleScope.launch {
-
-    }
-
+//    private fun ctegotyCommunicateNetwork() = lifecycleScope.launch {
+//
+//    }
 
 
 //    private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
