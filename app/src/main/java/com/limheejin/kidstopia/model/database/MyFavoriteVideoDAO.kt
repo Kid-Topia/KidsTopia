@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MyFavoriteVideoDAO {
@@ -13,7 +14,7 @@ interface MyFavoriteVideoDAO {
     fun insertVideo(myFavoriteVideo: MyFavoriteVideoEntity)
 
     @Query("SELECT * FROM video_table")
-    fun getAllVideo(): MutableList<MyFavoriteVideoEntity>
+    suspend fun getAllVideo(): MutableList<MyFavoriteVideoEntity>
 
     @Query("DELETE FROM video_table WHERE video_id = :video_id")
     fun deleteVideo(video_id: String)
