@@ -9,6 +9,7 @@ interface ChannelsInterface {
     suspend fun getChannels(
         @Query("key") key: String = NetworkClient.AUTH_KEY,
         @Query("part") part: String,
-        @Query("id") id: String
+        @Query("id") id: String,
+        @Query("maxResults") maxResults: Int,
     ): PopularData
 }

@@ -1,112 +1,143 @@
-package com.limheejin.kidstopia.presentation.fragment
 
+package com.limheejin.kidstopia.presentation.fragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.limheejin.kidstopia.databinding.FragmentHomeBinding
-import com.limheejin.kidstopia.model.PopularData
-import com.limheejin.kidstopia.model.PopularItems
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
+import com.limheejin.kidstopia.presentation.adapter.ChannelRVAdapter
+import com.limheejin.kidstopia.presentation.fragment.Adapter.MostPopularRVAdapter
 import com.limheejin.kidstopia.presentation.network.NetworkClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private lateinit var adapterMostPopular: MostPopularRVAdapter
+//    private lateinit var adapterCategoty: CategoryRVAdapter
+    private lateinit var adapterChannel: ChannelRVAdapter
 
-    private lateinit var layoutManagerMost: LinearLayoutManager
-    private lateinit var layoutManagerCategotry: LinearLayoutManager
-    private lateinit var layoutManagerChannel: LinearLayoutManager
 
-    private lateinit var mostAdapter: MostAdapter
-    private lateinit var categoryAdapter: CategoryAdapter
-    private lateinit var channelAdapter: ChannelAdapter
-
-    lateinit var mostitem : PopularData
-    lateinit var dao: MyFavoriteVideoDAO
-    lateinit var ItemChannel: PopularData
-    lateinit var ItemCategoty: PopularData
-
-    override  fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater,container,false)
-        val view = binding.root
-
-        return view
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupMostPopularRV()
+        setupChannelRV()
+        setupRecyclerView()
+        fetchMostPopularVideos()
+        fetchChannel()
 
+    }
+
+    private fun fetchMostPopularVideos() {
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO){
+                    NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
+                        key = NetworkClient.AUTH_KEY,
+                        part = "snippet",
+                        chart = "mostPopular",
+                        maxResults = 5
+                    )
+                }
+                adapterMostPopular.setItems(response.items)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "인기 동영상이 정상적으로 연결되지 않았습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }
+
+    private fun fetchChannel() {
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO){
+                    NetworkClient.youtubeApiChannels.getChannels(
+                        key = NetworkClient.AUTH_KEY,
+                        part = "snippet,contentDetails",
+                        id = "UCL6JmiMXKoXS6bpP1D3bk8g,UCPUeGC_AL-OnDQORKhRm6iA,UCscjd-azZ1AqHxxrO6YDIQg,UCscjd-azZ1AqHxxrO6YDIQg,UC-oIulX1JBJ0aKAB0GHnThA" ,
+                        maxResults = 5
+                    )
+                }
+                adapterChannel.setItemsChannel(response.items)
+            } catch (e: Exception){
+                Toast.makeText(requireContext(), "채널 연결이 실패했습니다. .", Toast.LENGTH_SHORT).show()
+
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
         // 수평 스크롤
-        layoutManagerMost = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL,false)
-        layoutManagerCategotry = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL,false)
-        layoutManagerChannel = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL,false)
+        val layoutManagerMostPopular = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
 
-        //어뎁터 연결
-        mostAdapter= MostAdapter(requireContext())
-        categoryAdapter= CategoryAdapter(requireContext())
-        channelAdapter = ChannelAdapter(requireContext())
+//        val layoutManagerCategotry = LinearLayoutManager(
+//            requireContext(),
+//            LinearLayoutManager.HORIZONTAL, false
+//        )
+        val layoutManagerChannel = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
 
-        binding.homeMostVidio.layoutManager = layoutManagerMost
-        binding.homeMostVidio.adapter = mostAdapter
+        //어댑터 연결
 
-        binding.hoemCategory.layoutManager = layoutManagerCategotry
-//        binding.hoemCategory.adapter = adapterCategory
+        binding.homeMostVidio.layoutManager = layoutManagerMostPopular
+        binding.homeMostVidio.adapter = adapterMostPopular
 
+//        binding.hoemCategory.layoutManager = layoutManagerCategotry
+//        binding.hoemCategory.adapter = adapterCategoty
+//
         binding.homeChannel.layoutManager = layoutManagerChannel
-        binding.homeChannel.adapter = channelAdapter
+        binding.homeChannel.adapter = adapterChannel
 
-        binding.homeMostVidio.adapter = mostAdapter
-        mostAdapter.items  = mutableListOf<PopularItems>()
-        binding.homeMostVidio.layoutManager = LinearLayoutManager(requireContext())
-
-        popularVideoCommunicateNetwork()
-//        channelsCommunicateNetwork()
-    }
-
-    private fun popularVideoCommunicateNetwork() = lifecycleScope.launch {
-        mostitem = NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
-            NetworkClient.AUTH_KEY,
-            "snippet, contentDetails",
-            "mostPopular",
-            10,
-            "KR"
-        )
-
-        mostAdapter.items = mostitem.items
-        mostAdapter.notifyDataSetChanged()
 
     }
-    private fun channelsCommunicateNetwork() = lifecycleScope.launch {
-        ItemChannel = NetworkClient.youtubeApiChannels.getChannels(
-            NetworkClient.AUTH_KEY,
-            "snippet",
-            "UCL6JmiMXKoXS6bpP1D3bk8g"
+
+    private fun setupMostPopularRV() {
+        adapterMostPopular = MostPopularRVAdapter(
+            onItemClick = {
+
+            }
         )
+    }
 
-        binding.homeChannel.adapter = channelAdapter
-        channelAdapter.itemsChannel  = ItemChannel.items
-        binding.homeMostVidio.layoutManager = LinearLayoutManager(requireContext())
+    private fun setupChannelRV(){
+        adapterChannel = ChannelRVAdapter (
+            onItemClick = {
 
+            }
+        )
     }
 
 //    private fun categotyCommunicateNetwork() = lifecycleScope.launch {
 //
 //    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 
 }
+

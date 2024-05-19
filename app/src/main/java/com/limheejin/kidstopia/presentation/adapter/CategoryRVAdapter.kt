@@ -1,8 +1,8 @@
-package com.limheejin.kidstopia.presentation.fragment
+package com.limheejin.kidstopia.presentation.adapter
 
 import android.content.Context
 
-class CategoryAdapter(private val context: Context) {
+class CategoryRVAdapter(private val context: Context) {
 //    RecyclerView.Adapter<CategoryFragmentAdapter.CategoryViewHolder>(){
 //
 //
