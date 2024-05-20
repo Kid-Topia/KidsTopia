@@ -1,53 +1,59 @@
 package com.limheejin.kidstopia.presentation.adapter
 
-import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.ChannelItemBinding
 import com.limheejin.kidstopia.model.PopularItems
 
-class ChannelAdapter(private val context: Context) :
-    RecyclerView.Adapter<ChannelAdapter.ChannelViewHolder>() {
+class ChannelRVAdapter(private val onItemClick: (PopularItems) -> Unit) :
+    RecyclerView.Adapter<ChannelRVAdapter.ChannelViewHolder>() {
 
-    var itemsChannel : MutableList<PopularItems> = mutableListOf()
+    private var itemsChannel: List<PopularItems> = mutableListOf()
+
+    fun setItemsChannel(items: List<PopularItems>) {
+        this.itemsChannel = items
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelViewHolder {
-        val binding = ChannelItemBinding.
-        inflate(LayoutInflater.from(parent.context),
-            parent,false)
+        val binding = ChannelItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
+        )
         return ChannelViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
+        val items = itemsChannel[position]
+        holder.bind(items)
     }
 
     override fun getItemCount(): Int {
         return itemsChannel.size
     }
 
-    override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
-        val items = itemsChannel[position]
-        holder.Channel(items)
-    }
+    inner class ChannelViewHolder(val binding: ChannelItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    inner class ChannelViewHolder(private val binding: ChannelItemBinding) :
-        RecyclerView.ViewHolder(binding.root){
-            fun Channel(item: PopularItems){
-                val img_channel : ImageView = binding.imgChannel
-                val title_channel : TextView = binding.titleChannel
-
-                Glide.with(context)
-                    .load(item.snippet.thumbnails)
-                    .into(img_channel)
-
-                title_channel.text = item.snippet.title
+        init {
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick(itemsChannel[position])
+                }
             }
+        }
 
+        fun bind(item: PopularItems) {
+            with(binding){
+                titleChannel.text = item.snippet.title
+                Glide.with(itemView.context)
+                    .load(item.snippet.thumbnails.medium.url)
+                    .into(imgChannel)
+            }
+        }
     }
-//    fun updateData(newItems: List<PopularItems>) {
-//        itemsChannel.clear()
-//        itemsChannel.addAll(newItems)
-//        notifyDataSetChanged()
-//    }
-
 }
