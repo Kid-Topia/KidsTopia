@@ -1,6 +1,10 @@
 package com.limheejin.kidstopia.presentation.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,12 +13,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
 import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
+import com.limheejin.kidstopia.presentation.adapter.VisitedPageAdapter
 import com.limheejin.kidstopia.presentation.network.NetworkClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -62,6 +68,7 @@ class VideoDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        hideNavigationView(true)
         initView()
         return binding.root
     }
@@ -70,6 +77,11 @@ class VideoDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListener()
         initListenerCoroutineScope()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideNavigationView(false)
     }
 
     private fun initData() { // bundle로 받아온 videoId로 Video API에서 동영상 정보 받아오기
@@ -120,7 +132,11 @@ class VideoDetailFragment : Fragment() {
                 val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
                 val date = videoId?.let { it1 -> dao.getVideoDate(it1) }
                 if (isLikedDate != null) {
-                    //Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT)
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                        run {
+                            Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
+                        }
+                    }, 0)
                     dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
                         MyFavoriteVideoEntity(
                             videoId ?: "",
@@ -133,7 +149,11 @@ class VideoDetailFragment : Fragment() {
                         )
                     )
                 } else {
-                    //Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                        run {
+                            Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                        }
+                    }, 0)
                     dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
                         MyFavoriteVideoEntity(
                             videoId ?: "",
@@ -154,11 +174,19 @@ class VideoDetailFragment : Fragment() {
 
         btnPlay.setOnClickListener {
             Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=${videoId}")))
         }
 
         btnShareImg.setOnClickListener { // 공유 버튼 클릭 시 실행 (미구현)
             Toast.makeText(context, R.string.toast_detailfragment_share, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun hideNavigationView(bool: Boolean) {
+        val nav = activity?.findViewById<BottomNavigationView>(R.id.nav)
+        if (bool) {
+            nav?.visibility = View.GONE
+        } else nav?.visibility = View.VISIBLE
     }
 
     companion object {
