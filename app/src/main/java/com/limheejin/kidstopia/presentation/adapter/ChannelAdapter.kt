@@ -7,13 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.ChannelItemBinding
 import com.limheejin.kidstopia.model.PopularItems
+import com.limheejin.kidstopia.model.database.ChannelData
+import com.limheejin.kidstopia.model.database.ChannelSnippet
 
-class ChannelRVAdapter(private val onItemClick: (PopularItems) -> Unit) :
+class ChannelRVAdapter(private val onItemClick: (ChannelData) -> Unit) :
     RecyclerView.Adapter<ChannelRVAdapter.ChannelViewHolder>() {
 
-    private var itemsChannel: List<PopularItems> = mutableListOf()
+    private var itemsChannel: List<ChannelData> = mutableListOf()
 
-    fun setItemsChannel(items: List<PopularItems>) {
+    fun setItemsChannel(items: List<ChannelData>) {
         this.itemsChannel = items
         notifyDataSetChanged()
     }
@@ -47,11 +49,11 @@ class ChannelRVAdapter(private val onItemClick: (PopularItems) -> Unit) :
             }
         }
 
-        fun bind(item: PopularItems) {
+        fun bind(item: ChannelData) {
             with(binding){
                 titleChannel.text = item.snippet.title
                 Glide.with(itemView.context)
-                    .load(item.snippet.thumbnails.medium.url)
+                    .load(item.snippet.thumbnails?.high?.url)
                     .into(imgChannel)
             }
         }
