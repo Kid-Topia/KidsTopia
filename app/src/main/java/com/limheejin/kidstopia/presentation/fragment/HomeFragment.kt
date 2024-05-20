@@ -40,18 +40,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        categoryId = "22"
-
-        setupMostPopularRV()
-        setupChannelRV()
-        setupCategoryRV()
-        setupRecyclerView()
-        fetchMostPopularVideos()
-        fetchCategory()
-        fetchCategoryIdVideo(categoryId)
         setupSpinner()
     }
-
 
     private fun fetchMostPopularVideos() {
         lifecycleScope.launch {
@@ -175,7 +165,6 @@ class HomeFragment : Fragment() {
             parentFragmentManager.beginTransaction().setCustomAnimations(
                     R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
                 ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
-
         })
     }
 
@@ -187,36 +176,32 @@ class HomeFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
             spinner.adapter = adapter
         }
-//        spinner.onItemSelectedListener = object : AdapterView.OnItemClickListener {
-//            override fun OnItemSelected(
-//                parent: AdapterView<*>, view: View?, position: Int, id: Long
-//            ) {
-//                val categoryName = parent.getItemAtPosition(position) as String
-//                val category = CategorgityType.from(categoryName)
-//                category?.let {
-//
-//                }
-//            }
-//
-//            override fun onNot(parent: AdapterView<*>) {
-//
-//            }
-//        }
-    }
 
-    enum class CategoryType(val categoryId: String, val categoryName: String) {
-        MUSIC("10", "음악"),
-        ANIMALS("15","동물"),
-        TRAVEL("19","여행"),
-        EDUCATION("27","교육");
+        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
-        companion object {
-            fun type(categoryName: String): CategoryType? {
-                return entries.find{ it.categoryName == categoryName}
+                when(position) {
+                    0 -> { selectCategory("10") }
+                    1 -> { selectCategory("15") }
+                    2 -> { selectCategory("19") }
+                    3 -> { selectCategory("27") }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
     }
 
+    private fun selectCategory(categoryId: String){
+        setupMostPopularRV()
+        setupChannelRV()
+        setupCategoryRV()
+        setupRecyclerView()
+        fetchMostPopularVideos()
+        fetchCategory()
+        fetchCategoryIdVideo(categoryId)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
