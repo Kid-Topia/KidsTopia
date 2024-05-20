@@ -210,6 +210,17 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    enum class CategoryType(val categoryId: String, val categoryName: String) {
+        MUSIC("10", "음악"),
+        ANIMALS("15","동물"),
+        TRAVEL("19","여행"),
+        EDUCATION("27","교육");
 
+        companion object {
+            fun type(categoryName: String): CategoryType? {
+                return entries.find{ it.categoryName == categoryName}
+            }
+        }
+    }
 }
 
