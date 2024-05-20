@@ -146,8 +146,8 @@ class HomeFragment : Fragment() {
             bundle.putString("VideoId", MostvideoId)
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
-                    R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-                ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+                R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
+            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
         })
     }
 
@@ -160,8 +160,8 @@ class HomeFragment : Fragment() {
             bundle.putString("VideoId", MostvideoId)
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
-                    R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-                ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+                R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
+            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
         })
     }
 
@@ -173,8 +173,8 @@ class HomeFragment : Fragment() {
             bundle.putString("VideoId", MostvideoId)
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
-                    R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-                ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+                R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
+            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
 
         })
     }
@@ -187,36 +187,7 @@ class HomeFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
             spinner.adapter = adapter
         }
-//        spinner.onItemSelectedListener = object : AdapterView.OnItemClickListener {
-//            override fun OnItemSelected(
-//                parent: AdapterView<*>, view: View?, position: Int, id: Long
-//            ) {
-//                val categoryName = parent.getItemAtPosition(position) as String
-//                val category = CategorgityType.from(categoryName)
-//                category?.let {
-//
-//                }
-//            }
-//
-//            override fun onNot(parent: AdapterView<*>) {
-//
-//            }
-//        }
     }
-
-    enum class CategoryType(val categoryId: String, val categoryName: String) {
-        MUSIC("10", "음악"),
-        ANIMALS("15","동물"),
-        TRAVEL("19","여행"),
-        EDUCATION("27","교육");
-
-        companion object {
-            fun type(categoryName: String): CategoryType? {
-                return entries.find{ it.categoryName == categoryName}
-            }
-        }
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
