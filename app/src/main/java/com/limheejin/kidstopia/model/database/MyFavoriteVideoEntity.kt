@@ -15,5 +15,6 @@ data class MyFavoriteVideoEntity(
     val ChannelId: String?,
     val thumbnails: String?,
     val date: String?,
-    val classify: String
+    val classify: String,
+    val isLikedDate: String?
 )

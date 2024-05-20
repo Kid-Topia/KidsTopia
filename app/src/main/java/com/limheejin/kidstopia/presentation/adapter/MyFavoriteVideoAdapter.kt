@@ -28,6 +28,7 @@ class MyFavoriteVideoAdapter(private val items: MutableList<MyFavoriteVideoEntit
     }
 
     override fun onBindViewHolder(holder: MyFavoriteVideoAdapter.Holder, position: Int) {
+        items.sortByDescending { it.isLikedDate }
         holder.itemView.setOnClickListener {
             itemClick?.itemClick(items[position].id)
         }

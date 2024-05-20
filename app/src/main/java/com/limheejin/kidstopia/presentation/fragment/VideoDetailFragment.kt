@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val ARG_PARAM1 = "VideoId"
 private const val ARG_PARAM2 = "param2"
@@ -68,6 +69,7 @@ class VideoDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
+        initListenerCoroutineScope()
     }
 
     private fun initData() { // bundle로 받아온 videoId로 Video API에서 동영상 정보 받아오기
@@ -93,12 +95,58 @@ class VideoDetailFragment : Fragment() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                MyFavoriteVideoEntity(
-                    videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited"
+            val classify = videoId?.let { dao.getVideoClassify(it) }
+            val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
+
+            if (classify != null) {
+                dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                    MyFavoriteVideoEntity(
+                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, classify, isLikedDate
+                    )
                 )
-            )
+            } else {
+                dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                    MyFavoriteVideoEntity(
+                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited", null
+                    )
+                )
+            }
             Log.d("checkDb", "${dao.getAllVideo()}")
+        }
+    }
+    private fun initListenerCoroutineScope() = lifecycleScope.launch {
+        binding.btnLikeImg.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
+                val date = videoId?.let { it1 -> dao.getVideoDate(it1) }
+                if (isLikedDate != null) {
+                    //Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT)
+                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                        MyFavoriteVideoEntity(
+                            videoId ?: "",
+                            snippet.title,
+                            snippet.channelTitle,
+                            snippet.thumbnails.high.url,
+                            date,
+                            "isVisited",
+                            null
+                        )
+                    )
+                } else {
+                    //Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                        MyFavoriteVideoEntity(
+                            videoId ?: "",
+                            snippet.title,
+                            snippet.channelTitle,
+                            snippet.thumbnails.high.url,
+                            date,
+                            "isLiked",
+                            dateString
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -106,30 +154,6 @@ class VideoDetailFragment : Fragment() {
 
         btnPlay.setOnClickListener {
             Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
-        }
-
-        btnLikeImg.setOnClickListener {
-            btnLikeImg.isSelected = btnLikeImg.isSelected != true
-
-            if (btnLikeImg.isSelected) { // 한 번 누르면 재밌게 본 목록에 동영상 저장 및 토스트 실행
-                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
-                CoroutineScope(Dispatchers.IO).launch {
-                    dao.insertVideo(
-                        MyFavoriteVideoEntity(
-                            videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isLiked"
-                        )
-                    )
-                    Log.d("checkDb", "${dao.getAllVideo()}")
-                }
-            } else { // 저장 상태로 또 누르면 재밌게 본 목록에서 동영상 삭제 및 토스트 실행
-                Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT)
-                    .show()
-                CoroutineScope(Dispatchers.IO).launch {
-                    dao.deleteVideo(videoId?:"")
-                    Log.d("checkDb", "${dao.getAllVideo()}")
-                }
-            }
-
         }
 
         btnShareImg.setOnClickListener { // 공유 버튼 클릭 시 실행 (미구현)

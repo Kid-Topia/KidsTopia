@@ -1,12 +1,9 @@
 package com.limheejin.kidstopia.model.database
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MyFavoriteVideoDAO {
@@ -16,7 +13,21 @@ interface MyFavoriteVideoDAO {
     @Query("SELECT * FROM video_table")
     suspend fun getAllVideo(): MutableList<MyFavoriteVideoEntity>
 
+    @Query("SELECT date FROM video_table WHERE video_id =:video_id")
+    suspend fun getVideoDate(video_id: String): String
+
+    @Query("SELECT isLikedDate FROM video_table WHERE video_id =:video_id")
+    suspend fun getVideoLikedDate(video_id: String): String
+
+    @Query("SELECT classify FROM video_table WHERE video_id =:video_id")
+    suspend fun getVideoClassify(video_id: String): String
+
     @Query("DELETE FROM video_table WHERE video_id = :video_id")
     fun deleteVideo(video_id: String)
 
+    @Query("DELETE FROM video_table WHERE classify = 'isVisited'")
+    fun deleteVisitedVideo()
+
+    @Query("DELETE FROM video_table WHERE classify = 'isLiked'")
+    fun deleteLikedVideo()
 }
