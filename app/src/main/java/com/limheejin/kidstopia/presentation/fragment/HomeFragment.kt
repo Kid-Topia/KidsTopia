@@ -192,7 +192,7 @@ class HomeFragment : Fragment() {
 //                parent: AdapterView<*>, view: View?, position: Int, id: Long
 //            ) {
 //                val categoryName = parent.getItemAtPosition(position) as String
-//                val category = CategoryType.from(categoryName)
+//                val category = CategorgityType.from(categoryName)
 //                category?.let {
 //
 //                }
@@ -202,12 +202,6 @@ class HomeFragment : Fragment() {
 //
 //            }
 //        }
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     enum class CategoryType(val categoryId: String, val categoryName: String) {
@@ -221,6 +215,12 @@ class HomeFragment : Fragment() {
                 return entries.find{ it.categoryName == categoryName}
             }
         }
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 
