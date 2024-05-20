@@ -25,9 +25,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapterMostPopular: MostPopularRVAdapter
-    private lateinit var adapterCategoty: CategoryRVAdapter
+    private lateinit var adapterCategory: CategoryRVAdapter
     private lateinit var adapterChannel: ChannelRVAdapter
-
+    private lateinit var categoryId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,15 +39,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        categoryId = "20"
 
         setupMostPopularRV()
         setupChannelRV()
         setupCategoryRV()
         setupRecyclerView()
         fetchMostPopularVideos()
-        fetchChannel()
         fetchCategory()
-
+        fetchCategoryIdVideo(categoryId)
     }
 
     private fun fetchMostPopularVideos() {
@@ -68,31 +68,43 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
-    private fun fetchChannel() {
-        lifecycleScope.launch {
-
-            val response = withContext(Dispatchers.IO) {
-                NetworkClient.youtubeApiChannels.getChannels(
-                    key = NetworkClient.AUTH_KEY,
-                    part = "snippet,contentDetails",
-                    id = "UCL6JmiMXKoXS6bpP1D3bk8g,UCPUeGC_AL-OnDQORKhRm6iA,UC-oIulX1JBJ0aKAB0GHnThA,UCscjd-azZ1AqHxxrO6YDIQg,UCqXwKu6dKobXEQFhdKtiJLQ,UCTc15uvrhUmW044MfJG4HHw,UCqvhycZ4nzxTHU4RxHjYgWQ,UCJJk67SRRXWos0d2l47dOuA"
-                )
-            }
-            adapterChannel.setItemsChannel(response.items)
+    private fun fetchCategoryIdVideo(categoryId: String) = lifecycleScope.launch {
+        val response = withContext(Dispatchers.IO) {
+            NetworkClient.youtubeApiCategoryVideoList.getPopularVideoCategoryList(
+                key = NetworkClient.AUTH_KEY,
+                part = "snippet",
+                chart = "mostPopular",
+                categoryId,
+                maxResults = 5
+            )
         }
+        adapterCategory.setCategoryItems(response.items)
+        val channelList = response.items.joinToString { it.snippet.channelId }
+        Log.d("channelList", "$channelList")
+        fetchChannel(channelList)
+    }
+
+    private fun fetchChannel(channelList: String) = lifecycleScope.launch {
+        val response = withContext(Dispatchers.IO) {
+            NetworkClient.youtubeApiChannels.getChannels(
+                key = NetworkClient.AUTH_KEY,
+                part = "snippet",
+                id = channelList
+            )
+        }
+        adapterChannel.setItemsChannel(response.items)
     }
 
     private fun fetchCategory() {
         lifecycleScope.launch {
-            val response = withContext(Dispatchers.IO) {
-                NetworkClient.youtubeApiCategories.getCategoryList(
-                    key = NetworkClient.AUTH_KEY,
-                    part = "snippet",
-                    regionCode = "KR"
-                )
-            }
-            Log.d("response","${response}")
+//            val response = withContext(Dispatchers.IO) {
+//                NetworkClient.youtubeApiCategories.getCategoryList(
+//                    key = NetworkClient.AUTH_KEY,
+//                    part = "snippet",
+//                    regionCode = "KR"
+//                )
+//            }
+//            Log.d("response","${response}")
 //            adapterCategoty.setCategoryItems(response.items)
         }
     }
@@ -119,12 +131,34 @@ class HomeFragment : Fragment() {
         binding.homeMostVidio.adapter = adapterMostPopular
 
         binding.hoemCategory.layoutManager = layoutManagerCategotry
-        binding.hoemCategory.adapter = adapterCategoty
+        binding.hoemCategory.adapter = adapterCategory
 
         binding.homeChannel.layoutManager = layoutManagerChannel
         binding.homeChannel.adapter = adapterChannel
 
 
+    }
+
+    private fun setupCategoryRV() {
+        adapterCategory = CategoryRVAdapter (
+            onItemClick = { position ->
+                val MostvideoId = position.id
+                val videoDetailFragment = VideoDetailFragment()
+                val bundle = Bundle()
+                bundle.putString("VideoId", MostvideoId)
+                videoDetailFragment.arguments = bundle
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.slide_up,
+                        R.anim.none,
+                        R.anim.none,
+                        R.anim.slide_down
+                    )
+                    .replace(R.id.fl, videoDetailFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        )
     }
 
     private fun setupMostPopularRV() {
@@ -151,36 +185,23 @@ class HomeFragment : Fragment() {
     }
     private fun setupChannelRV() {
         adapterChannel = ChannelRVAdapter(
-            onItemClick = {
-                    position ->
-                val channelId = position.id
+            onItemClick = { position ->
+                val MostvideoId = position.snippet.title
                 val videoDetailFragment = VideoDetailFragment()
                 val bundle = Bundle()
-                bundle.putString("VideoId", channelId)
+                bundle.putString("VideoId", MostvideoId)
                 videoDetailFragment.arguments = bundle
                 parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
+                    .setCustomAnimations(
+                        R.anim.slide_up,
+                        R.anim.none,
+                        R.anim.none,
+                        R.anim.slide_down
+                    )
                     .replace(R.id.fl, videoDetailFragment)
                     .addToBackStack(null)
                     .commit()
-            }
-        )
-    }
 
-    private fun setupCategoryRV() {
-        adapterCategoty = CategoryRVAdapter (
-            onItemClick = {
-//                position ->
-//                val channelId = position.snippet.channelTitle
-//                val videoDetailFragment = VideoDetailFragment()
-//                val bundle = Bundle()
-//                bundle.putString("VideoId", channelId)
-//                videoDetailFragment.arguments = bundle
-//                parentFragmentManager.beginTransaction()
-//                    .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-//                    .replace(R.id.fl, videoDetailFragment)
-//                    .addToBackStack(null)
-//                    .commit()
             }
         )
     }
