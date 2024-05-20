@@ -54,14 +54,6 @@ class ChannelRVAdapter(private val onItemClick: (PopularItems) -> Unit) :
                     .load(item.snippet.thumbnails.medium.url)
                     .into(imgChannel)
             }
-//            val img_channel: ImageView = binding.imgChannel
-//            val title_channel: TextView = binding.titleChannel
-
-//            Glide.with(context)
-//                .load(item.snippet.thumbnails)
-//                .into(img_channel)
-//
-//            title_channel.text = item.snippet.title
         }
     }
 }
