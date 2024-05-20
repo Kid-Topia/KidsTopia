@@ -1,6 +1,7 @@
 package com.limheejin.kidstopia.presentation.activity
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -18,6 +19,8 @@ import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.presentation.fragment.HomeFragment
 import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
 import com.limheejin.kidstopia.presentation.fragment.SearchFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
@@ -35,6 +38,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
+
+//        데이터베이스 모든정보 지울때 잠깐 주석풀어 사용
+//        CoroutineScope(Dispatchers.IO).launch {
+//            dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
+//            dao.deleteVisitedVideo()
+//            dao.deleteLikedVideo()
+//        }
 
         val kidsTopia = "찌글이"
 

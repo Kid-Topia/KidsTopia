@@ -23,6 +23,7 @@ class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>):
     }
 
     override fun onBindViewHolder(holder: VisitedPageAdapter.Holder, position: Int) {
+        items.sortByDescending { it.date }
         holder.itemView.setOnClickListener {
             itemClick?.itemClick(items[position].id)
         }

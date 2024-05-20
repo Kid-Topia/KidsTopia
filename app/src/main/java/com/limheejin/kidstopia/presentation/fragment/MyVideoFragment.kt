@@ -1,6 +1,7 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentMyVideoBinding
 import com.limheejin.kidstopia.model.PopularData
@@ -19,6 +21,8 @@ import com.limheejin.kidstopia.viewmodel.MyVideoViewModel
 import com.limheejin.kidstopia.viewmodel.MyVideoViewModelFactory
 
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -61,10 +65,9 @@ class MyVideoFragment : Fragment() {
 
     fun initRv() {
         myVideoViewModel.items.observe(viewLifecycleOwner) { items ->
+            val visitedPageAdapter = VisitedPageAdapter(items)
             val myFavoriteVideoAdapter =
                 MyFavoriteVideoAdapter(items.filter { it.classify == "isLiked" }.toMutableList())
-            val visitedPageAdapter =
-                VisitedPageAdapter(items.filter { it.classify == "isVisited" }.toMutableList())
 
             myFavoriteVideoAdapter.itemClick = object : MyFavoriteVideoAdapter.ItemClick {
                 override fun itemClick(id: String) {
