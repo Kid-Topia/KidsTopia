@@ -1,6 +1,7 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +69,6 @@ class HomeFragment : Fragment() {
                     .show()
             }
         }
-
     }
 
     private fun fetchChannel() {
@@ -91,10 +91,11 @@ class HomeFragment : Fragment() {
                 NetworkClient.youtubeApiCategories.getCategoryList(
                     key = NetworkClient.AUTH_KEY,
                     part = "snippet",
-                    id = ""
+                    regionCode = "KR"
                 )
             }
-            adapterCategoty.setCategoryItems(response.items)
+            Log.d("response","${response}")
+//            adapterCategoty.setCategoryItems(response.items)
         }
     }
 
@@ -150,7 +151,6 @@ class HomeFragment : Fragment() {
             }
         )
     }
-
     private fun setupChannelRV() {
         adapterChannel = ChannelRVAdapter(
             onItemClick = {
