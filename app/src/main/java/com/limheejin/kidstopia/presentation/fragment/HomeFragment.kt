@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,8 +32,7 @@ class HomeFragment : Fragment() {
     private lateinit var categoryId: String
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -47,7 +49,9 @@ class HomeFragment : Fragment() {
         fetchMostPopularVideos()
         fetchCategory()
         fetchCategoryIdVideo(categoryId)
+        setupSpinner()
     }
+
 
     private fun fetchMostPopularVideos() {
         lifecycleScope.launch {
@@ -67,6 +71,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
     private fun fetchCategoryIdVideo(categoryId: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
             NetworkClient.youtubeApiCategoryVideoList.getPopularVideoCategoryList(
@@ -86,9 +91,7 @@ class HomeFragment : Fragment() {
     private fun fetchChannel(channelList: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
             NetworkClient.youtubeApiChannels.getChannels(
-                key = NetworkClient.AUTH_KEY,
-                part = "snippet",
-                id = channelList
+                key = NetworkClient.AUTH_KEY, part = "snippet", id = channelList
             )
         }
         adapterChannel.setItemsChannel(response.items)
@@ -111,17 +114,14 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         // 수평 스크롤
         val layoutManagerMostPopular = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
+            requireContext(), LinearLayoutManager.HORIZONTAL, false
         )
 
         val layoutManagerCategotry = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
+            requireContext(), LinearLayoutManager.HORIZONTAL, false
         )
         val layoutManagerChannel = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
+            requireContext(), LinearLayoutManager.HORIZONTAL, false
         )
 
         //어댑터 연결
@@ -139,70 +139,69 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupCategoryRV() {
-        adapterCategory = CategoryRVAdapter (
-            onItemClick = { position ->
-                val MostvideoId = position.id
-                val videoDetailFragment = VideoDetailFragment()
-                val bundle = Bundle()
-                bundle.putString("VideoId", MostvideoId)
-                videoDetailFragment.arguments = bundle
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_up,
-                        R.anim.none,
-                        R.anim.none,
-                        R.anim.slide_down
-                    )
-                    .replace(R.id.fl, videoDetailFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-        )
+        adapterCategory = CategoryRVAdapter(onItemClick = { position ->
+            val MostvideoId = position.id
+            val videoDetailFragment = VideoDetailFragment()
+            val bundle = Bundle()
+            bundle.putString("VideoId", MostvideoId)
+            videoDetailFragment.arguments = bundle
+            parentFragmentManager.beginTransaction().setCustomAnimations(
+                    R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
+                ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+        })
     }
 
     private fun setupMostPopularRV() {
 
-        adapterMostPopular = MostPopularRVAdapter(
-            onItemClick = { position ->
-                val MostvideoId = position.id
-                val videoDetailFragment = VideoDetailFragment()
-                val bundle = Bundle()
-                bundle.putString("VideoId", MostvideoId)
-                videoDetailFragment.arguments = bundle
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_up,
-                        R.anim.none,
-                        R.anim.none,
-                        R.anim.slide_down
-                    )
-                    .replace(R.id.fl, videoDetailFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-        )
+        adapterMostPopular = MostPopularRVAdapter(onItemClick = { position ->
+            val MostvideoId = position.id
+            val videoDetailFragment = VideoDetailFragment()
+            val bundle = Bundle()
+            bundle.putString("VideoId", MostvideoId)
+            videoDetailFragment.arguments = bundle
+            parentFragmentManager.beginTransaction().setCustomAnimations(
+                    R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
+                ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+        })
     }
-    private fun setupChannelRV() {
-        adapterChannel = ChannelRVAdapter(
-            onItemClick = { position ->
-                val MostvideoId = position.snippet.title
-                val videoDetailFragment = VideoDetailFragment()
-                val bundle = Bundle()
-                bundle.putString("VideoId", MostvideoId)
-                videoDetailFragment.arguments = bundle
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_up,
-                        R.anim.none,
-                        R.anim.none,
-                        R.anim.slide_down
-                    )
-                    .replace(R.id.fl, videoDetailFragment)
-                    .addToBackStack(null)
-                    .commit()
 
-            }
-        )
+    private fun setupChannelRV() {
+        adapterChannel = ChannelRVAdapter(onItemClick = { position ->
+            val MostvideoId = position.snippet.title
+            val videoDetailFragment = VideoDetailFragment()
+            val bundle = Bundle()
+            bundle.putString("VideoId", MostvideoId)
+            videoDetailFragment.arguments = bundle
+            parentFragmentManager.beginTransaction().setCustomAnimations(
+                    R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
+                ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+
+        })
+    }
+
+    private fun setupSpinner() {
+        val spinner: Spinner = binding.spinner
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.spinner_array, android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            spinner.adapter = adapter
+        }
+//        spinner.onItemSelectedListener = object : AdapterView.OnItemClickListener {
+//            override fun OnItemSelected(
+//                parent: AdapterView<*>, view: View?, position: Int, id: Long
+//            ) {
+//                val categoryName = parent.getItemAtPosition(position) as String
+//                val category = CategoryType.from(categoryName)
+//                category?.let {
+//
+//                }
+//            }
+//
+//            override fun onNot(parent: AdapterView<*>) {
+//
+//            }
+//        }
     }
 
 
