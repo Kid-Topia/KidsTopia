@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_array">
+        <item>음악</item>
+        <item>동물</item>
+        <item>여행</item>
+        <item>교육</item>
+    </string-array>
+</resources>
