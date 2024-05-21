@@ -1,9 +1,13 @@
 package com.limheejin.kidstopia.presentation.activity
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,6 +16,7 @@ import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
+import com.limheejin.kidstopia.presentation.CloseDialog
 import com.limheejin.kidstopia.presentation.fragment.HomeFragment
 import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
 import com.limheejin.kidstopia.presentation.fragment.SearchFragment
@@ -40,6 +45,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
+//        this.onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -88,5 +94,25 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
+//    private val TAG = this.javaClass.simpleName
+//    //콜백 인스턴스 생성
+//    private val callback = object : OnBackPressedCallback(true) {
+//        override fun handleOnBackPressed() {
+//            // 뒤로 버튼 이벤트 처리
+//            val dialog = CloseDialog()
+//            dialog.show(requireActivity.supportFragmentManager, "CloseDialog")
+//        }
+//    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+    val dialog = CloseDialog()
+        dialog.show(supportFragmentManager, "CloseDialog")
+//    super.onBackPressed()
+//        val builder = AlertDialog.Builder(this)
+//        val layout = layoutInflater.inflate(R.layout.dialog)
+//        builder.setView(layout)
+    }
 }
+
 
