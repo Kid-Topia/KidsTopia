@@ -47,8 +47,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
-//        this.onBackPressedDispatcher.addCallback(this, callback)
-
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -96,25 +94,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             dao.deleteLikedVideo()
         }
     }
-
-//    private val TAG = this.javaClass.simpleName
-//    //콜백 인스턴스 생성
-//    private val callback = object : OnBackPressedCallback(true) {
-//        override fun handleOnBackPressed() {
-//            // 뒤로 버튼 이벤트 처리
-//            val dialog = CloseDialog()
-//            dialog.show(requireActivity.supportFragmentManager, "CloseDialog")
-//        }
-//    }
-
-//    @SuppressLint("MissingSuperCall")
-//    override fun onBackPressed() {
-//    val dialog = CloseDialog()
-//        dialog.show(supportFragmentManager, "CloseDialog")
-//        val builder = AlertDialog.Builder(this)
-//        val layout = layoutInflater.inflate(R.layout.dialog)
-//        builder.setView(layout)
-//    }
 
     override fun onBackPressed() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
