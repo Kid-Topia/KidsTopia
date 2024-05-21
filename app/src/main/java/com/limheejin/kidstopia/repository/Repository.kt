@@ -8,6 +8,10 @@ import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 
 
 interface Repository {
-//    suspend fun getPopularVideoList(): PopularData
+    suspend fun getVideo(
+        AUTH_KEY: String,
+        part: String,
+        videoId: String
+    ): PopularData
     suspend fun getSearchVideoList(query: String): SearchData
 }

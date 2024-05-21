@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.limheejin.kidstopia.model.SearchItems
 import com.limheejin.kidstopia.presentation.network.NetworkClient
+import com.limheejin.kidstopia.repository.MyVideoRepository
+import com.limheejin.kidstopia.repository.MyVideoRepositoryImpl
 import com.limheejin.kidstopia.repository.Repository
 import com.limheejin.kidstopia.repository.RepositoryImpl
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +67,10 @@ class SearchViewModel(private val repository: Repository) : ViewModel() {
 
 
 class SearchVideoViewModelFactory : ViewModelProvider.Factory {
-    private val repository = RepositoryImpl(NetworkClient.youtubeApiSearch)
+    private val repository = RepositoryImpl(
+        NetworkClient.youtubeApiVideo,
+        NetworkClient.youtubeApiSearch
+    )
     override fun <T : ViewModel> create(
         modelClass: Class<T>,
         extras: CreationExtras
