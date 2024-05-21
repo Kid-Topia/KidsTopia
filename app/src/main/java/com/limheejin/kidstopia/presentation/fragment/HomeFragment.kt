@@ -159,9 +159,9 @@ class HomeFragment : Fragment() {
     private fun setupSpinner() {
         val spinner: Spinner = binding.spinner
         ArrayAdapter.createFromResource(
-            requireContext(), R.array.spinner_array, android.R.layout.simple_spinner_item
+            requireContext(), R.array.spinner_array, R.layout.spinner_items
         ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            adapter.setDropDownViewResource(R.layout.spinner_items)
             spinner.adapter = adapter
         }
 
