@@ -55,6 +55,7 @@ class MostPopularRVAdapter(private val onItemClick: (PopularItems) -> Unit ) : /
                     .into(mostImg)
 
             }
+
         }
     }
 }
