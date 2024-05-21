@@ -4,11 +4,13 @@ package com.limheejin.kidstopia.presentation.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
 //        this.onBackPressedDispatcher.addCallback(this, callback)
+
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -112,6 +115,27 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 //        val layout = layoutInflater.inflate(R.layout.dialog)
 //        builder.setView(layout)
 //    }
+
+    override fun onBackPressed() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+            .setCancelable(false)
+
+        val alertDialog = builder.create()
+
+        // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
+        dialogView.findViewById<AppCompatButton>(R.id.btn_confirm).setOnClickListener {
+            alertDialog.dismiss()
+            super.onBackPressed()  // 확인 버튼을 누르면 앱 종료
+        }
+
+        dialogView.findViewById<AppCompatButton>(R.id.btn_cancel).setOnClickListener {
+            alertDialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
+        }
+
+        alertDialog.show()
+    }
 }
 
 
