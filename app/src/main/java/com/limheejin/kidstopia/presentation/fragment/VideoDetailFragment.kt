@@ -113,13 +113,13 @@ class VideoDetailFragment : Fragment() {
             if (classify != null) {
                 dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
                     MyFavoriteVideoEntity(
-                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, classify, isLikedDate
+                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.maxres.url, dateString, classify, isLikedDate
                     )
                 )
             } else {
                 dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
                     MyFavoriteVideoEntity(
-                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited", null
+                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.maxres.url, dateString, "isVisited", null
                     )
                 )
             }
@@ -142,7 +142,7 @@ class VideoDetailFragment : Fragment() {
                             videoId ?: "",
                             snippet.title,
                             snippet.channelTitle,
-                            snippet.thumbnails.high.url,
+                            snippet.thumbnails.maxres.url,
                             date,
                             "isVisited",
                             null
@@ -159,7 +159,7 @@ class VideoDetailFragment : Fragment() {
                             videoId ?: "",
                             snippet.title,
                             snippet.channelTitle,
-                            snippet.thumbnails.high.url,
+                            snippet.thumbnails.maxres.url,
                             date,
                             "isLiked",
                             dateString
