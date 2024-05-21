@@ -42,7 +42,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSpinner()
+        setupMostPopularRV()
+        setupChannelRV()
+        setupCategoryRV()
+        setupRecyclerView()
+        fetchMostPopularVideos()
         fetchCategoryIdVideo("뽀로로")
+
+
     }
 
     private fun fetchMostPopularVideos() {
@@ -66,7 +73,7 @@ class HomeFragment : Fragment() {
 
     private fun fetchCategoryIdVideo(query: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiCategoryVideoList.getVideoCategoryList(
+            NetworkClient.youtubeApiSearch.getSearchList(
                 query = query ,
                 key = NetworkClient.AUTH_KEY,
                 part = "snippet",
@@ -113,7 +120,6 @@ class HomeFragment : Fragment() {
 
         binding.homeChannel.layoutManager = layoutManagerChannel
         binding.homeChannel.adapter = adapterChannel
-
 
     }
 
@@ -169,7 +175,7 @@ class HomeFragment : Fragment() {
         }
 
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 when(position) {
                     0 -> { selectCategory("10") }
@@ -185,12 +191,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun selectCategory(categoryId: String){
-        setupMostPopularRV()
-        setupChannelRV()
-        setupCategoryRV()
-        setupRecyclerView()
-        fetchMostPopularVideos()
-        fetchCategoryIdVideo(categoryId)
+
     }
 
     override fun onDestroyView() {
