@@ -1,6 +1,5 @@
 package com.limheejin.kidstopia.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.limheejin.kidstopia.model.SearchItems
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.presentation.network.NetworkClient
 import com.limheejin.kidstopia.repository.Repository
 import com.limheejin.kidstopia.repository.RepositoryImpl

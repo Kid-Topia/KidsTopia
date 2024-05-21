@@ -94,6 +94,7 @@ class VideoDetailFragment : Fragment() {
         }
     }
 
+
     private fun initView() = lifecycleScope.launch {
         dataList = deferred.await() // 받아온 동영상 정보 처리가 끝난 후에 dataList에 할당
 

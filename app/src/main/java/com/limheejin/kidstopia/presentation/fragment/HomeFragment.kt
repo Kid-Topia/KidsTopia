@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        categoryId = "20"
+        categoryId = "22"
 
         setupMostPopularRV()
         setupChannelRV()
@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
                 val response = withContext(Dispatchers.IO) {
                     NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
                         key = NetworkClient.AUTH_KEY,
-                        part = "snippet",
+                        part = "snippet, status",
                         chart = "mostPopular",
                         maxResults = 5
                     )
