@@ -124,4 +124,9 @@ class VideoDetailFragment : Fragment() {
                 }
             }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        parentFragmentManager.popBackStack()
+    }
 }

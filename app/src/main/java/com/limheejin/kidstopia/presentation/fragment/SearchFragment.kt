@@ -63,7 +63,7 @@ class SearchFragment : Fragment() {
                 videoDetailFragment.arguments = bundle
                 parentFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-                    .replace(R.id.fl, videoDetailFragment)
+                    .add(R.id.fl, videoDetailFragment)
                     .addToBackStack(null)
                     .commit()
             },
