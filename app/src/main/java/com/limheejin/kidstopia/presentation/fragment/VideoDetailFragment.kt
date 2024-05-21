@@ -73,6 +73,7 @@ class VideoDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         hideNavigationView(false)
+        viewModel.videoData.removeObservers(viewLifecycleOwner)
     }
 
     private fun initObserve() {
@@ -102,7 +103,7 @@ class VideoDetailFragment : Fragment() {
         }
 
         binding.btnLikeImg.setOnClickListener {
-            videoId?.let { viewModel.likeStatus(it) }
+            videoId?.let { viewModel.updateLikeStatus(it, requireContext()) }
         }
     }
 
