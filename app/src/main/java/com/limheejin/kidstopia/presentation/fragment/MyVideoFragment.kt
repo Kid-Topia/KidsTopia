@@ -24,8 +24,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 class MyVideoFragment : Fragment() {
     private lateinit var binding: FragmentMyVideoBinding
@@ -33,22 +31,10 @@ class MyVideoFragment : Fragment() {
         MyVideoViewModelFactory(requireContext())
     }
 
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentMyVideoBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -69,35 +55,8 @@ class MyVideoFragment : Fragment() {
             val myFavoriteVideoAdapter =
                 MyFavoriteVideoAdapter(items.filter { it.classify == "isLiked" }.toMutableList())
 
-            myFavoriteVideoAdapter.itemClick = object : MyFavoriteVideoAdapter.ItemClick {
-                override fun itemClick(id: String) {
-                    val videoId = id // 선택한 비디오의 유튜브 비디오 ID값
-                    val videoDetailFragment = VideoDetailFragment()
-                    val bundle = Bundle() // 일단 번들로 구현
-                    bundle.putString("VideoId", videoId)
-                    videoDetailFragment.arguments = bundle
-                    parentFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-                        .replace(R.id.fl, videoDetailFragment)
-                        .addToBackStack(null)
-                        .commit()
-                }
-            }
-
-            visitedPageAdapter.itemClick = object : VisitedPageAdapter.ItemClick {
-                override fun itemClick(id: String) {
-                    val videoId = id // 선택한 비디오의 유튜브 비디오 ID값
-                    val videoDetailFragment = VideoDetailFragment()
-                    val bundle = Bundle() // 일단 번들로 구현
-                    bundle.putString("VideoId", videoId)
-                    videoDetailFragment.arguments = bundle
-                    parentFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-                        .replace(R.id.fl, videoDetailFragment)
-                        .addToBackStack(null)
-                        .commit()
-                }
-            }
+            setupVisitedPageAdapterClickListener(visitedPageAdapter)
+            setupMyFavoriteVideoAdapterClickListener(myFavoriteVideoAdapter)
 
             binding.apply {
                 favoriteVideoRv.adapter = myFavoriteVideoAdapter
@@ -109,14 +68,37 @@ class MyVideoFragment : Fragment() {
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyVideoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun setupVisitedPageAdapterClickListener(adapter: VisitedPageAdapter) {
+        adapter.itemClick = object : VisitedPageAdapter.ItemClick {
+            override fun itemClick(id: String) {
+                val videoId = id // 선택한 비디오의 유튜브 비디오 ID값
+                val videoDetailFragment = VideoDetailFragment()
+                val bundle = Bundle() // 일단 번들로 구현
+                bundle.putString("VideoId", videoId)
+                videoDetailFragment.arguments = bundle
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
+                    .replace(R.id.fl, videoDetailFragment)
+                    .addToBackStack(null)
+                    .commit()
             }
+        }
+    }
+
+    private fun setupMyFavoriteVideoAdapterClickListener(adapter: MyFavoriteVideoAdapter) {
+        adapter.itemClick = object : MyFavoriteVideoAdapter.ItemClick {
+            override fun itemClick(id: String) {
+                val videoId = id // 선택한 비디오의 유튜브 비디오 ID값
+                val videoDetailFragment = VideoDetailFragment()
+                val bundle = Bundle() // 일단 번들로 구현
+                bundle.putString("VideoId", videoId)
+                videoDetailFragment.arguments = bundle
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
+                    .replace(R.id.fl, videoDetailFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
     }
 }

@@ -41,6 +41,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        categoryId = "22"
+
+        setupMostPopularRV()
+        setupChannelRV()
+        setupCategoryRV()
+        setupRecyclerView()
+        fetchMostPopularVideos()
+        fetchCategory()
+        fetchCategoryIdVideo(categoryId)
         setupSpinner()
         setupMostPopularRV()
         setupChannelRV()
@@ -58,7 +67,7 @@ class HomeFragment : Fragment() {
                 val response = withContext(Dispatchers.IO) {
                     NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
                         key = NetworkClient.AUTH_KEY,
-                        part = "snippet",
+                        part = "snippet, status",
                         chart = "mostPopular",
                         maxResults = 5
                     )
@@ -95,6 +104,19 @@ class HomeFragment : Fragment() {
             )
         }
         adapterChannel.setItemsChannel(response.items)
+    }
+
+    private fun fetchCategory() {
+        lifecycleScope.launch {
+            val response = withContext(Dispatchers.IO) {
+                NetworkClient.youtubeApiCategories.getCategoryList(
+                    key = NetworkClient.AUTH_KEY,
+                    part = "snippet",
+                    regionCode = "KR"
+                )
+            }
+            Log.d("response","${response}")
+        }
     }
 
     private fun setupRecyclerView() {
