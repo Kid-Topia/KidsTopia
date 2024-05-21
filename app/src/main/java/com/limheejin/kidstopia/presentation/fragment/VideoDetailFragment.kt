@@ -113,17 +113,23 @@ class VideoDetailFragment : Fragment() {
         channelDataList = deferredChannelData.await() // 받아온 정보 처리가 끝난 후에 dataList에 할당
 
         if (videoId != null) {
-            val url = videoSnippet.thumbnails.maxres?.url
+            var url = videoSnippet.thumbnails.maxres?.url
+            if (videoSnippet.thumbnails.maxres == null) {
+                url = videoSnippet.thumbnails.high.url
+            }
             with(binding) { // 받아온 동영상 정보로 View 설정
                 tvChannelName.text = videoSnippet.channelTitle
                 tvTitle.text = videoSnippet.title
                 tvDescription.text = videoSnippet.description
                 Glide.with(ivThumbnail.context)
-                    .load(url ?: videoSnippet.thumbnails.high.url)
+                    .load(url)
                     .into(ivThumbnail)
             }
         } else {
-            val url = channelSnippet.thumbnails.maxres?.url
+            var url = channelSnippet.thumbnails.maxres?.url
+            if (channelSnippet.thumbnails.maxres == null) {
+                url = channelSnippet.thumbnails.high.url
+            }
             with(binding) { // 받아온 정보로 View 설정
                 tvChannelName.text = "구독자 수 : ${channelDataList.items[0].statistics.subscriberCount}"
                 tvTitle.text = channelSnippet.title
