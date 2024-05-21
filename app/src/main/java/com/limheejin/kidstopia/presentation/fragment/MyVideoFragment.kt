@@ -16,24 +16,11 @@ import com.limheejin.kidstopia.viewmodel.MyVideoViewModel
 import com.limheejin.kidstopia.viewmodel.MyVideoViewModelFactory
 import kotlinx.coroutines.launch
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 class MyVideoFragment : Fragment() {
     private lateinit var binding: FragmentMyVideoBinding
     private val myVideoViewModel by viewModels<MyVideoViewModel> {
         MyVideoViewModelFactory(requireContext())
-    }
-
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -60,17 +47,8 @@ class MyVideoFragment : Fragment() {
             val myFavoriteVideoAdapter =
                 MyFavoriteVideoAdapter(items.filter { it.classify == "isLiked" }.toMutableList())
 
-            myFavoriteVideoAdapter.itemClick = object : MyFavoriteVideoAdapter.ItemClick {
-                override fun itemClick(id: String) {
-                    setFragment(id)
-                }
-            }
-
-            visitedPageAdapter.itemClick = object : VisitedPageAdapter.ItemClick {
-                override fun itemClick(id: String) {
-                    setFragment(id)
-                }
-            }
+            setupVisitedPageAdapterClickListener(visitedPageAdapter)
+            setupMyFavoriteVideoAdapterClickListener(myFavoriteVideoAdapter)
 
             binding.apply {
                 favoriteVideoRv.adapter = myFavoriteVideoAdapter
@@ -82,6 +60,22 @@ class MyVideoFragment : Fragment() {
         }
     }
 
+    private fun setupVisitedPageAdapterClickListener(adapter: VisitedPageAdapter) {
+        adapter.itemClick = object : VisitedPageAdapter.ItemClick {
+            override fun itemClick(id: String) {
+                setFragment(id)
+            }
+        }
+    }
+
+    private fun setupMyFavoriteVideoAdapterClickListener(adapter: MyFavoriteVideoAdapter) {
+        adapter.itemClick = object : MyFavoriteVideoAdapter.ItemClick {
+            override fun itemClick(id: String) {
+                setFragment(id)
+            }
+        }
+    }
+
     private fun setFragment(id: String) {
         val videoDetailFragment = VideoDetailFragment()
         val bundle = Bundle()
@@ -89,19 +83,9 @@ class MyVideoFragment : Fragment() {
         videoDetailFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-            .replace(R.id.fl, videoDetailFragment)
+            .add(R.id.fl, videoDetailFragment)
             .addToBackStack(null)
             .commit()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyVideoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

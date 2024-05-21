@@ -39,7 +39,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupSpinner()
+        setupRecyclerView()
+        fetchMostPopularVideo()
+
     }
 
     override fun onDestroyView() {
@@ -59,22 +63,19 @@ class HomeFragment : Fragment() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 when (position) {
-                    0 -> selectCategory("10")
-                    1 -> selectCategory("15")
-                    2 -> selectCategory("20")
-                    3 -> selectCategory("28")
+                    0 -> fetchCategoryIdVideo("뽀로로 다시보기") // 뽀로로
+                    1 -> fetchCategoryIdVideo("핑크퐁 다시보기") // 핑크퐁
+                    2 -> fetchCategoryIdVideo("노리q 동물") // 동물 : 노리q
+                    3 -> fetchCategoryIdVideo("주니토니") // 음악 : 주니토니
+                    4 -> fetchCategoryIdVideo("예림tv") // 동화 : 예림tv
+                    5 -> fetchCategoryIdVideo("깨비키즈 과학") // 과학 : 깨비키즈 과학
+                    6 -> fetchCategoryIdVideo("아이들교실") // 교육 : 아이들교실
                 }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-    }
 
-    private fun selectCategory(categoryId: String) {
-        setupRecyclerView()
-        fetchMostPopularVideo()
-        fetchCategoryPopularVideo(categoryId)
     }
 
     private fun fetchMostPopularVideo() = lifecycleScope.launch {
@@ -93,15 +94,10 @@ class HomeFragment : Fragment() {
                 .show()
         }
     }
-
-    private fun fetchCategoryPopularVideo(categoryId: String) = lifecycleScope.launch {
+    private fun fetchCategoryIdVideo(query: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiCategoryPopularVideo.getCategoryPopularVideoList(
-                key = NetworkClient.AUTH_KEY,
-                part = "snippet",
-                chart = "mostPopular",
-                categoryId,
-                maxResults = 5
+            NetworkClient.youtubeApiOrderSearch.getSearchList(
+                query = query
             )
         }
         adapterCategory.setCategoryItems(response.items)
@@ -119,27 +115,14 @@ class HomeFragment : Fragment() {
         adapterChannel.setItemsChannel(response.items)
     }
 
-//    private fun fetchCategory() {
-//        lifecycleScope.launch {
-////            val response = withContext(Dispatchers.IO) {
-////                NetworkClient.youtubeApiCategories.getCategoryList(
-////                    key = NetworkClient.AUTH_KEY,
-////                    part = "snippet",
-////                    regionCode = "KR"
-////                )
-////            }
-////            Log.d("response","${response}")
-////            adapterCategory.setCategoryItems(response.items)
-//        }
-//    }
 
     private fun setupRecyclerView() {
         // onItemClick 구현
-        adapterCategory = CategoryAdapter(onItemClick = { position ->
-            setFragment(position.id,"VideoId")
-        })
         adapterMostPopular = MostPopularVideoAdapter(onItemClick = { position ->
             setFragment(position.id,"VideoId")
+        })
+        adapterCategory = CategoryAdapter(onItemClick = { position ->
+            setFragment(position.id.videoId,"VideoId")
         })
         adapterChannel = ChannelAdapter(onItemClick = { position ->
             setFragment(position.id, "ChannelId")

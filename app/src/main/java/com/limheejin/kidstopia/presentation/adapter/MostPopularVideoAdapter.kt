@@ -51,6 +51,5 @@ class MostPopularVideoAdapter(private val onItemClick: (PopularItems) -> Unit) :
                     .into(mostImg)
             }
         }
-
     }
 }

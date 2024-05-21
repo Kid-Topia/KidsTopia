@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 object NetworkClient {
     private const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
-    const val AUTH_KEY = "AIzaSyCR08D5FBu7tW5yE8kqFFZLWiaFKRv-V8g"
+    const val AUTH_KEY = "AIzaSyDn_qx3lccTkBr48NdVn7Fog1Zk7iy_C5A"
 
     private fun createOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
@@ -36,7 +36,6 @@ object NetworkClient {
     val youtubeApiSearch: SearchInterface = retrofitBase.create(SearchInterface::class.java)
     val youtubeApiVideo: VideoInterface = retrofitBase.create(VideoInterface::class.java)
     val youtubeApiPopularVideo: PopularVideoInterface = retrofitBase.create(PopularVideoInterface::class.java)
-    val youtubeApiChannel: ChannelsInterface = retrofitBase.create(ChannelsInterface::class.java)
-    val youtubeApiCategory: CategoryInterface = retrofitBase.create(CategoryInterface::class.java)
-    val youtubeApiCategoryPopularVideo: CategoryPopularVideoInterface = retrofitBase.create(CategoryPopularVideoInterface::class.java)
+    val youtubeApiChannel: ChannelInterface = retrofitBase.create(ChannelInterface::class.java)
+    val youtubeApiOrderSearch: SearchOrderInterface = retrofitBase.create(SearchOrderInterface::class.java)
 }

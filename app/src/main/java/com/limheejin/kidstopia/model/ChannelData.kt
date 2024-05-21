@@ -4,7 +4,7 @@ package com.limheejin.kidstopia.model
 data class ChannelData(
     val kind: String,
     val etag: String,
-    val items: List<ChannelItems>
+    val items: MutableList<ChannelItems>
 )
 
 data class ChannelItems(

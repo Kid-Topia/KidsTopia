@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.CategoryItemBinding
-import com.limheejin.kidstopia.model.PopularItems
+import com.limheejin.kidstopia.model.SearchItems
 
-class CategoryAdapter(private val onItemClick: (PopularItems) -> Unit) :
+class CategoryAdapter(private val onItemClick: (SearchItems) -> Unit) :
     RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
-    private var categoryitems: List<PopularItems> = mutableListOf()
+    private var categoryitems: MutableList<SearchItems> = mutableListOf()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setCategoryItems(items: List<PopularItems>) {
+    fun setCategoryItems(items: MutableList<SearchItems>) {
         this.categoryitems = items
         notifyDataSetChanged()
     }
@@ -43,7 +43,7 @@ class CategoryAdapter(private val onItemClick: (PopularItems) -> Unit) :
             }
         }
 
-        fun bind(item: PopularItems) {
+        fun bind(item: SearchItems) {
             with(binding) {
                 categoryTextInfo.text = item.snippet.title
                 Glide.with(itemView.context)
@@ -51,6 +51,5 @@ class CategoryAdapter(private val onItemClick: (PopularItems) -> Unit) :
                     .into(categoryImg)
             }
         }
-
     }
 }

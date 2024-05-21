@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -21,6 +22,8 @@ import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.network.NetworkClient
+import com.limheejin.kidstopia.viewmodel.VideoDetailViewModel
+import com.limheejin.kidstopia.viewmodel.VideoDetailViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -36,26 +39,11 @@ class VideoDetailFragment : Fragment() {
     private var videoId: String? = null
     private var channelId: String? = null
 
-    private lateinit var videoDataList: PopularData
-    private lateinit var channelDataList: ChannelData
-    private lateinit var deferredVideoData: Deferred<PopularData>
-    private lateinit var deferredChannelData: Deferred<ChannelData>
-
     private val binding by lazy {
         FragmentVideoDetailBinding.inflate(layoutInflater)
     }
-
-    private val dao by lazy {
-        MyFavoriteVideoDatabase.getDatabase(requireContext()).getDao()
-    }
-    private val videoSnippet by lazy {
-        videoDataList.items[0].snippet
-    }
-    private val channelSnippet by lazy {
-        channelDataList.items[0].snippet
-    }
-    private val dateString by lazy {
-        LocalDateTime.now().toString()
+    private val viewModel by viewModels<VideoDetailViewModel> {
+        VideoDetailViewModelFactory(requireContext())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,9 +52,8 @@ class VideoDetailFragment : Fragment() {
             videoId = it.getString(ARG_PARAM1)
             channelId = it.getString(ARG_PARAM2)
         }
-        Log.d("channel", channelId.toString())
-
-        initData()
+        videoId?.let { viewModel.fetchVideoData(it) }
+        channelId?.let { viewModel.fetchChannelData(it) }
     }
 
     override fun onCreateView(
@@ -74,88 +61,60 @@ class VideoDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         hideNavigationView(true)
-        initView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserve()
         initListener()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         hideNavigationView(false)
+        viewModel.videoData.removeObservers(viewLifecycleOwner)
+        viewModel.channelData.removeObservers(viewLifecycleOwner)
     }
 
-    private fun initData() { // bundle로 받아온 id로 Video API에서 정보 받아오기
-
-        deferredVideoData = CoroutineScope(Dispatchers.IO).async {
-            return@async NetworkClient.youtubeApiVideo.getVideoData(
-                NetworkClient.AUTH_KEY,
-                "snippet",
-                videoId ?: "4zntlZz-KoA"
-            )
-        }
-
-        deferredChannelData = CoroutineScope(Dispatchers.IO).async {
-            return@async NetworkClient.youtubeApiChannel.getChannelData(
-                NetworkClient.AUTH_KEY,
-                "snippet, statistics",
-                channelId ?: "UCtm_ppWxsfRzxaYXMA2bqMw"
-            )
-        }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        parentFragmentManager.popBackStack()
     }
 
-    private fun initView() = lifecycleScope.launch {
-        videoDataList = deferredVideoData.await() // 받아온 동영상 정보 처리가 끝난 후에 dataList에 할당
-        channelDataList = deferredChannelData.await() // 받아온 정보 처리가 끝난 후에 dataList에 할당
-
-        if (videoId != null) {
-            var url = videoSnippet.thumbnails.maxres?.url
-            if (videoSnippet.thumbnails.maxres == null) {
-                url = videoSnippet.thumbnails.high.url
+    private fun initObserve() {
+        viewModel.videoData.observe(viewLifecycleOwner) { data ->
+            val snippet = data.items[0].snippet
+            var url = snippet.thumbnails.maxres?.url
+            if (snippet.thumbnails.maxres == null) {
+                url = snippet.thumbnails.high.url
             }
             with(binding) { // 받아온 동영상 정보로 View 설정
-                tvChannelName.text = videoSnippet.channelTitle
-                tvTitle.text = videoSnippet.title
-                tvDescription.text = videoSnippet.description
+                tvChannelName.text = snippet.channelTitle
+                tvTitle.text = snippet.title
+                tvDescription.text = snippet.description
                 Glide.with(ivThumbnail.context)
                     .load(url)
                     .into(ivThumbnail)
             }
-        } else {
-            var url = channelSnippet.thumbnails.maxres?.url
-            if (channelSnippet.thumbnails.maxres == null) {
-                url = channelSnippet.thumbnails.high.url
+            videoId?.let { viewModel.insertOrUpdateVideo(it) }
+        }
+        viewModel.channelData.observe(viewLifecycleOwner) { data ->
+            val snippet = data.items[0].snippet
+            var url = snippet.thumbnails.maxres?.url
+            if (snippet.thumbnails.maxres == null) {
+                url = snippet.thumbnails.high.url
             }
-            with(binding) { // 받아온 정보로 View 설정
-                tvChannelName.text = "구독자 수 : ${channelDataList.items[0].statistics.subscriberCount}"
-                tvTitle.text = channelSnippet.title
-                tvDescription.text = channelSnippet.description
+            with(binding) { // 받아온 동영상 정보로 View 설정
+                tvChannelName.text = "구독자 수 : ${data.items[0].statistics.subscriberCount}"
+                tvTitle.text = snippet.title
+                tvDescription.text = snippet.description
                 Glide.with(ivThumbnail.context)
-                    .load(url ?: channelSnippet.thumbnails.high.url)
+                    .load(url)
                     .into(ivThumbnail)
                 btnLikeImg.visibility = View.GONE
                 btnShareImg.visibility = View.GONE
             }
-        }
-
-        withContext(Dispatchers.IO) {
-            val classify = videoId?.let { dao.getVideoClassify(it) }
-            val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
-
-            if (classify != null) {
-                dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, dateString, classify, isLikedDate)
-                )
-            } else {
-                dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, dateString, "isVisited", null)
-                )
-            }
-            Log.d("checkDb", "${dao.getAllVideo()}")
         }
     }
 
@@ -186,29 +145,7 @@ class VideoDetailFragment : Fragment() {
         }
 
         binding.btnLikeImg.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
-                val date = videoId?.let { it1 -> dao.getVideoDate(it1) }
-                if (isLikedDate != null) {
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                        run {
-                            Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
-                        }
-                    }, 0)
-                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                        MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, date, "isVisited", null)
-                    )
-                } else {
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                        run {
-                            Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
-                        }
-                    }, 0)
-                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                        MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, date, "isLiked", dateString)
-                    )
-                }
-            }
+            videoId?.let { viewModel.updateLikeStatus(it, requireContext()) }
         }
 
     }
@@ -230,4 +167,5 @@ class VideoDetailFragment : Fragment() {
                 }
             }
     }
+
 }

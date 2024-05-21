@@ -4,7 +4,7 @@ import com.limheejin.kidstopia.model.ChannelData
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ChannelsInterface {
+interface ChannelInterface {
     @GET("channels")
     suspend fun getChannelData(
         @Query("key") key: String = NetworkClient.AUTH_KEY,

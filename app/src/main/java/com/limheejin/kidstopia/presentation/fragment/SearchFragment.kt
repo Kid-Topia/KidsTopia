@@ -1,6 +1,7 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -35,12 +36,10 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
         setupSearch()
         setupEasySearchButton()
         setupObservers()
-
     }
 
     private fun setupRecyclerView() {
@@ -58,7 +57,7 @@ class SearchFragment : Fragment() {
                 videoDetailFragment.arguments = bundle
                 parentFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-                    .replace(R.id.fl, videoDetailFragment)
+                    .add(R.id.fl, videoDetailFragment)
                     .addToBackStack(null)
                     .commit()
             },
