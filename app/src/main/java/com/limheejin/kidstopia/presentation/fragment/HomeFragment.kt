@@ -188,7 +188,7 @@ class HomeFragment : Fragment() {
         }
 
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 when(position) {
                     0 -> { selectCategory("10") }

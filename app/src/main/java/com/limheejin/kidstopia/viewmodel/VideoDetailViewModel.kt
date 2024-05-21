@@ -1,6 +1,8 @@
 package com.limheejin.kidstopia.viewmodel
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -94,7 +96,12 @@ class VideoDetailViewModel(
                         null
                     )
                 )
-                Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
+                Log.d("checkDb", "${databaseRepository.getAllVideo()}")
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                    run {
+                        Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
+                    }
+                }, 0)
             } else {
                 databaseRepository.insertVideo( // DAO에 isVisited 동영상 정보 저장
                     MyFavoriteVideoEntity(
@@ -107,7 +114,12 @@ class VideoDetailViewModel(
                         dateString
                     )
                 )
-                Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                Log.d("checkDb", "${databaseRepository.getAllVideo()}")
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                    run {
+                        Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                    }
+                }, 0)
             }
         }
     }
