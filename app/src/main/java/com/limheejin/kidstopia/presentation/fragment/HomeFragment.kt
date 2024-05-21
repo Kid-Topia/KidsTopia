@@ -21,6 +21,7 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.http.Query
 
 class HomeFragment : Fragment() {
 
@@ -41,6 +42,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSpinner()
+        fetchCategoryIdVideo("뽀로로")
     }
 
     private fun fetchMostPopularVideos() {
@@ -62,14 +64,15 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun fetchCategoryIdVideo(categoryId: String) = lifecycleScope.launch {
+    private fun fetchCategoryIdVideo(query: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiCategoryVideoList.getPopularVideoCategoryList(
+            NetworkClient.youtubeApiCategoryVideoList.getVideoCategoryList(
+                query = query ,
                 key = NetworkClient.AUTH_KEY,
                 part = "snippet",
-                chart = "mostPopular",
-                categoryId,
-                maxResults = 5
+                safeSearch = "strict",
+                type = "video",
+                maxResults = 5,
             )
         }
         adapterCategory.setCategoryItems(response.items)
@@ -86,20 +89,6 @@ class HomeFragment : Fragment() {
         }
         adapterChannel.setItemsChannel(response.items)
     }
-
-//    private fun fetchCategory() {
-//        lifecycleScope.launch {
-////            val response = withContext(Dispatchers.IO) {
-////                NetworkClient.youtubeApiCategories.getCategoryList(
-////                    key = NetworkClient.AUTH_KEY,
-////                    part = "snippet",
-////                    regionCode = "KR"
-////                )
-////            }
-////            Log.d("response","${response}")
-////            adapterCategoty.setCategoryItems(response.items)
-//        }
-//    }
 
     private fun setupRecyclerView() {
         // 수평 스크롤
@@ -133,7 +122,7 @@ class HomeFragment : Fragment() {
             val MostvideoId = position.id
             val videoDetailFragment = VideoDetailFragment()
             val bundle = Bundle()
-            bundle.putString("VideoId", MostvideoId)
+            bundle.putString("VideoId", MostvideoId.toString())
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down

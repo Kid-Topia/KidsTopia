@@ -6,16 +6,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.CategoryItemBinding
-import com.limheejin.kidstopia.model.PopularItems
+import com.limheejin.kidstopia.model.SearchItems
 
-class CategoryRVAdapter(private val onItemClick: (PopularItems) -> Unit) :
+class CategoryRVAdapter(private val onItemClick: (SearchItems) -> Unit) :
     RecyclerView.Adapter<CategoryRVAdapter.CategoryViewHolder>(){
 
-    private var categoryitems: List<PopularItems> = mutableListOf()
+    private var categoryitems: List<SearchItems> = mutableListOf()
 
-    fun setCategoryItems(items: List<PopularItems>){
+    fun setCategoryItems(items: List<SearchItems>){
         this.categoryitems = items
         notifyDataSetChanged()
+
     }
 
     override fun onCreateViewHolder(
@@ -51,7 +52,7 @@ class CategoryRVAdapter(private val onItemClick: (PopularItems) -> Unit) :
             }
         }
 
-        fun bind(item: PopularItems){
+        fun bind(item: SearchItems){
             with(binding){
                 categoryTextInfo.text = item.snippet.title
                 Glide.with(itemView.context)
