@@ -1,6 +1,5 @@
 package com.limheejin.kidstopia.presentation.fragment
 
-import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -27,14 +26,10 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchAdapter: RVSearchAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater)
         return binding.root
     }
@@ -45,7 +40,6 @@ class SearchFragment : Fragment() {
         setupSearch()
         setupEasySearchButton()
         setupObservers()
-
     }
 
     private fun setupRecyclerView() {
@@ -88,7 +82,7 @@ class SearchFragment : Fragment() {
 //        }
 
         // 검색 버튼없이 키보드의 엔터로 작동 (imeOptions="actionSearch", inputType="text" 로 설정 후 구현)
-        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
+        binding.etSearch.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER
             ) {
