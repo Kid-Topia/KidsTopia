@@ -92,19 +92,6 @@ class HomeFragment : Fragment() {
         adapterChannel.setItemsChannel(response.items)
     }
 
-    private fun fetchCategory() {
-        lifecycleScope.launch {
-            val response = withContext(Dispatchers.IO) {
-                NetworkClient.youtubeApiCategories.getCategoryList(
-                    key = NetworkClient.AUTH_KEY,
-                    part = "snippet",
-                    regionCode = "KR"
-                )
-            }
-            Log.d("response","${response}")
-        }
-    }
-
     private fun setupRecyclerView() {
         // 수평 스크롤
         val layoutManagerMostPopular = LinearLayoutManager(
@@ -134,7 +121,7 @@ class HomeFragment : Fragment() {
     private fun setupCategoryRV() {
         adapterCategory = CategoryRVAdapter(onItemClick = { position ->
             val MostvideoId = position.id.videoId
-            Log.d("position","${position.id.videoId}")
+            Log.d("position", "${position.id.videoId}")
             val videoDetailFragment = VideoDetailFragment()
             val bundle = Bundle()
             bundle.putString("VideoId", MostvideoId.toString())
@@ -146,7 +133,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupMostPopularRV() {
-
         adapterMostPopular = MostPopularRVAdapter(onItemClick = { position ->
             val MostvideoId = position.id
             val videoDetailFragment = VideoDetailFragment()
@@ -183,10 +169,14 @@ class HomeFragment : Fragment() {
             spinner.adapter = adapter
         }
 
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-
-                when(position) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
                     0 -> { fetchCategoryIdVideo("뽀로로 다시보기") }
                     1 -> { fetchCategoryIdVideo("핑크퐁 다시보기") }
                     2 -> { fetchCategoryIdVideo("노리q 동물") }
@@ -195,14 +185,6 @@ class HomeFragment : Fragment() {
                     5 -> { fetchCategoryIdVideo("깨비키즈 과학") }
                     6 -> { fetchCategoryIdVideo("아이들교실") }
                 }
-//
-//                뽀로로
-//                핑크퐁
-//                동물 : 노리q
-//                음악 : 주니토니
-//                동화 : 예림tv
-//                과학 : 깨비키즈 과학
-//                교육 : 아이들교실
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -1,28 +1,20 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentMyVideoBinding
-import com.limheejin.kidstopia.model.PopularData
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.adapter.MyFavoriteVideoAdapter
 import com.limheejin.kidstopia.presentation.adapter.VisitedPageAdapter
 import com.limheejin.kidstopia.viewmodel.MyVideoViewModel
 import com.limheejin.kidstopia.viewmodel.MyVideoViewModelFactory
-
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 
 class MyVideoFragment : Fragment() {

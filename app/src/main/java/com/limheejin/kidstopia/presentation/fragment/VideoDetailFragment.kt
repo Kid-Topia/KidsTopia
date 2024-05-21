@@ -91,11 +91,15 @@ class VideoDetailFragment : Fragment() {
     }
 
 
-
     private fun initListener() = with(binding) {
         btnPlay.setOnClickListener {
             Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=${videoId}")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=${videoId}")
+                )
+            )
         }
 
         btnShareImg.setOnClickListener { // 공유 버튼 클릭 시 실행 (미구현)
