@@ -84,7 +84,7 @@ class MyVideoFragment : Fragment() {
 
     private fun setFragment(id: String) {
         val videoDetailFragment = VideoDetailFragment()
-        val bundle = Bundle() // 일단 번들로 구현
+        val bundle = Bundle()
         bundle.putString("VideoId", id)
         videoDetailFragment.arguments = bundle
         parentFragmentManager.beginTransaction()

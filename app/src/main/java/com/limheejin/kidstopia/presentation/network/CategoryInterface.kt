@@ -12,14 +12,3 @@ interface CategoryInterface {
         @Query("regionCode") regionCode: String,
     )
 }
-
-interface PopularVideoCategoryInterface {
-    @GET("videos")
-    suspend fun getPopularVideoCategoryList(
-        @Query("key") key: String,
-        @Query("part") part: String,
-        @Query("chart") chart: String,
-        @Query("videoCategoryId") categoryId: String,
-        @Query("maxResults") maxResults: Int,
-    ): PopularData
-}

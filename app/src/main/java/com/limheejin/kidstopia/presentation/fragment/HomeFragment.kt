@@ -42,28 +42,61 @@ class HomeFragment : Fragment() {
         setupSpinner()
     }
 
-    private fun fetchMostPopularVideos() {
-        lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
-                        key = NetworkClient.AUTH_KEY,
-                        part = "snippet",
-                        chart = "mostPopular",
-                        maxResults = 5
-                    )
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupSpinner() {
+        val spinner: Spinner = binding.spinner
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.spinner_array, android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            spinner.adapter = adapter
+        }
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> selectCategory("10")
+                    1 -> selectCategory("15")
+                    2 -> selectCategory("20")
+                    3 -> selectCategory("28")
                 }
-                adapterMostPopular.setItems(response.items)
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "인기 동영상이 정상적으로 연결되지 않았습니다.", Toast.LENGTH_SHORT)
-                    .show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
     }
 
-    private fun fetchCategoryIdVideo(categoryId: String) = lifecycleScope.launch {
+    private fun selectCategory(categoryId: String) {
+        setupRecyclerView()
+        fetchMostPopularVideo()
+        fetchCategoryPopularVideo(categoryId)
+    }
+
+    private fun fetchMostPopularVideo() = lifecycleScope.launch {
+        try {
+            val response = withContext(Dispatchers.IO) {
+                NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
+                    key = NetworkClient.AUTH_KEY,
+                    part = "snippet",
+                    chart = "mostPopular",
+                    maxResults = 5
+                )
+            }
+            adapterMostPopular.setItems(response.items)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "인기 동영상이 정상적으로 연결되지 않았습니다.", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    private fun fetchCategoryPopularVideo(categoryId: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiCategoryVideoList.getPopularVideoCategoryList(
+            NetworkClient.youtubeApiCategoryPopularVideo.getCategoryPopularVideoList(
                 key = NetworkClient.AUTH_KEY,
                 part = "snippet",
                 chart = "mostPopular",
@@ -79,7 +112,7 @@ class HomeFragment : Fragment() {
 
     private fun fetchChannel(channelList: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiChannels.getChannels(
+            NetworkClient.youtubeApiChannel.getChannelData(
                 key = NetworkClient.AUTH_KEY, part = "snippet", id = channelList
             )
         }
@@ -96,115 +129,44 @@ class HomeFragment : Fragment() {
 ////                )
 ////            }
 ////            Log.d("response","${response}")
-////            adapterCategoty.setCategoryItems(response.items)
+////            adapterCategory.setCategoryItems(response.items)
 //        }
 //    }
 
     private fun setupRecyclerView() {
-        // 수평 스크롤
-        val layoutManagerMostPopular = LinearLayoutManager(
-            requireContext(), LinearLayoutManager.HORIZONTAL, false
-        )
-
-        val layoutManagerCategory = LinearLayoutManager(
-            requireContext(), LinearLayoutManager.HORIZONTAL, false
-        )
-        val layoutManagerChannel = LinearLayoutManager(
-            requireContext(), LinearLayoutManager.HORIZONTAL, false
-        )
+        // onItemClick 구현
+        adapterCategory = CategoryAdapter(onItemClick = { position ->
+            setFragment(position.id,"VideoId")
+        })
+        adapterMostPopular = MostPopularVideoAdapter(onItemClick = { position ->
+            setFragment(position.id,"VideoId")
+        })
+        adapterChannel = ChannelAdapter(onItemClick = { position ->
+            setFragment(position.id, "ChannelId")
+        })
 
         //어댑터 연결
-
-        binding.homeMostVidio.layoutManager = layoutManagerMostPopular
-        binding.homeMostVidio.adapter = adapterMostPopular
-
-        binding.hoemCategory.layoutManager = layoutManagerCategory
-        binding.hoemCategory.adapter = adapterCategory
-
-        binding.homeChannel.layoutManager = layoutManagerChannel
-        binding.homeChannel.adapter = adapterChannel
-
-
-    }
-
-    private fun setupCategoryRV() {
-        adapterCategory = CategoryAdapter(onItemClick = { position ->
-            val mostVideoId = position.id
-            val videoDetailFragment = VideoDetailFragment()
-            val bundle = Bundle()
-            bundle.putString("VideoId", mostVideoId)
-            videoDetailFragment.arguments = bundle
-            parentFragmentManager.beginTransaction().setCustomAnimations(
-                R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
-        })
-    }
-
-    private fun setupMostPopularRV() {
-        adapterMostPopular = MostPopularVideoAdapter(onItemClick = { position ->
-            val mostVideoId = position.id
-            val videoDetailFragment = VideoDetailFragment()
-            val bundle = Bundle()
-            bundle.putString("VideoId", mostVideoId)
-            videoDetailFragment.arguments = bundle
-            parentFragmentManager.beginTransaction().setCustomAnimations(
-                R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
-        })
-    }
-
-    private fun setupChannelRV() {
-        adapterChannel = ChannelAdapter(onItemClick = { position ->
-            val MostvideoId = position.snippet.title
-            val videoDetailFragment = VideoDetailFragment()
-            val bundle = Bundle()
-            bundle.putString("VideoId", MostvideoId)
-            videoDetailFragment.arguments = bundle
-            parentFragmentManager.beginTransaction().setCustomAnimations(
-
-                R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
-
-        })
-    }
-
-    private fun setupSpinner() {
-        val spinner: Spinner = binding.spinner
-        ArrayAdapter.createFromResource(
-            requireContext(), R.array.spinner_array, android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-            spinner.adapter = adapter
-        }
-
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-
-                when(position) {
-                    0 -> { selectCategory("10") }
-                    1 -> { selectCategory("15") }
-                    2 -> { selectCategory("20") }
-                    3 -> { selectCategory("28") }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+        binding.apply {
+            homeMostVidio.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            homeMostVidio.adapter = adapterMostPopular
+            homeCategory.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            homeCategory.adapter = adapterCategory
+            homeChannel.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            homeChannel.adapter = adapterChannel
         }
     }
 
-    private fun selectCategory(categoryId: String){
-        setupMostPopularRV()
-        setupChannelRV()
-        setupCategoryRV()
-        setupRecyclerView()
-        fetchMostPopularVideos()
-        fetchCategoryIdVideo(categoryId)
+    private fun setFragment(id: String?, param: String) {
+        val videoDetailFragment = VideoDetailFragment()
+        val bundle = Bundle()
+        bundle.putString(param, id)
+        videoDetailFragment.arguments = bundle
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
+            .replace(R.id.fl, videoDetailFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }
 

@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.ChannelItemBinding
-import com.limheejin.kidstopia.model.database.ChannelData
+import com.limheejin.kidstopia.model.ChannelItems
 
-class ChannelAdapter(private val onItemClick: (ChannelData) -> Unit) :
+class ChannelAdapter(private val onItemClick: (ChannelItems) -> Unit) :
     RecyclerView.Adapter<ChannelAdapter.ChannelViewHolder>() {
 
-    private var itemsChannel: List<ChannelData> = mutableListOf()
+    private var itemsChannel: List<ChannelItems> = mutableListOf()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setItemsChannel(items: List<ChannelData>) {
+    fun setItemsChannel(items: List<ChannelItems>) {
         this.itemsChannel = items
         notifyDataSetChanged()
     }
@@ -43,7 +43,7 @@ class ChannelAdapter(private val onItemClick: (ChannelData) -> Unit) :
             }
         }
 
-        fun bind(item: ChannelData) {
+        fun bind(item: ChannelItems) {
             with(binding) {
                 titleChannel.text = item.snippet.title
                 Glide.with(itemView.context)

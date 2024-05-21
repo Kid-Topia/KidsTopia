@@ -22,3 +22,14 @@ interface PopularVideoInterface {
         @Query("maxResults") maxResults: Int,
     ): PopularData
 }
+
+interface CategoryPopularVideoInterface {
+    @GET("videos")
+    suspend fun getCategoryPopularVideoList(
+        @Query("key") key: String,
+        @Query("part") part: String,
+        @Query("chart") chart: String,
+        @Query("videoCategoryId") categoryId: String,
+        @Query("maxResults") maxResults: Int,
+    ): PopularData
+}

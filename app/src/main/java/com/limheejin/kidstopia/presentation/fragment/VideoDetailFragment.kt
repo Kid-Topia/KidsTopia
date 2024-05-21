@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
+import com.limheejin.kidstopia.model.ChannelData
 import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
@@ -29,14 +30,16 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 private const val ARG_PARAM1 = "VideoId"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM2 = "ChannelId"
 
 class VideoDetailFragment : Fragment() {
     private var videoId: String? = null
-    private var param2: String? = null
+    private var channelId: String? = null
 
-    private lateinit var dataList: PopularData
-    private lateinit var deferred: Deferred<PopularData>
+    private lateinit var videoDataList: PopularData
+    private lateinit var channelDataList: ChannelData
+    private lateinit var deferredVideoData: Deferred<PopularData>
+    private lateinit var deferredChannelData: Deferred<ChannelData>
 
     private val binding by lazy {
         FragmentVideoDetailBinding.inflate(layoutInflater)
@@ -45,20 +48,24 @@ class VideoDetailFragment : Fragment() {
     private val dao by lazy {
         MyFavoriteVideoDatabase.getDatabase(requireContext()).getDao()
     }
-    private val snippet by lazy {
-        dataList.items[0].snippet
+    private val videoSnippet by lazy {
+        videoDataList.items[0].snippet
+    }
+    private val channelSnippet by lazy {
+        channelDataList.items[0].snippet
     }
     private val dateString by lazy {
         LocalDateTime.now().toString()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             videoId = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            channelId = it.getString(ARG_PARAM2)
         }
+        Log.d("channel", channelId.toString())
+
         initData()
     }
 
@@ -81,26 +88,52 @@ class VideoDetailFragment : Fragment() {
         hideNavigationView(false)
     }
 
-    private fun initData() { // bundle로 받아온 videoId로 Video API에서 동영상 정보 받아오기
-        deferred = CoroutineScope(Dispatchers.IO).async {
+    private fun initData() { // bundle로 받아온 id로 Video API에서 정보 받아오기
+
+        deferredVideoData = CoroutineScope(Dispatchers.IO).async {
             return@async NetworkClient.youtubeApiVideo.getVideoData(
                 NetworkClient.AUTH_KEY,
-                "snippet, contentDetails",
-                videoId ?: ""
+                "snippet",
+                videoId ?: "4zntlZz-KoA"
             )
         }
+
+        deferredChannelData = CoroutineScope(Dispatchers.IO).async {
+            return@async NetworkClient.youtubeApiChannel.getChannelData(
+                NetworkClient.AUTH_KEY,
+                "snippet, statistics",
+                channelId ?: "UCtm_ppWxsfRzxaYXMA2bqMw"
+            )
+        }
+
     }
 
     private fun initView() = lifecycleScope.launch {
-        dataList = deferred.await() // 받아온 동영상 정보 처리가 끝난 후에 dataList에 할당
+        videoDataList = deferredVideoData.await() // 받아온 동영상 정보 처리가 끝난 후에 dataList에 할당
+        channelDataList = deferredChannelData.await() // 받아온 정보 처리가 끝난 후에 dataList에 할당
 
-        with(binding) { // 받아온 동영상 정보로 View 설정
-            tvChannelName.text = snippet.channelTitle
-            tvTitle.text = snippet.title
-            tvDescription.text = snippet.description
-            Glide.with(ivThumbnail.context)
-                .load(snippet.thumbnails.maxres.url)
-                .into(ivThumbnail)
+        if (videoId != null) {
+            val url = videoSnippet.thumbnails.maxres?.url
+            with(binding) { // 받아온 동영상 정보로 View 설정
+                tvChannelName.text = videoSnippet.channelTitle
+                tvTitle.text = videoSnippet.title
+                tvDescription.text = videoSnippet.description
+                Glide.with(ivThumbnail.context)
+                    .load(url ?: videoSnippet.thumbnails.high.url)
+                    .into(ivThumbnail)
+            }
+        } else {
+            val url = channelSnippet.thumbnails.maxres?.url
+            with(binding) { // 받아온 정보로 View 설정
+                tvChannelName.text = "구독자 수 : ${channelDataList.items[0].statistics.subscriberCount}"
+                tvTitle.text = channelSnippet.title
+                tvDescription.text = channelSnippet.description
+                Glide.with(ivThumbnail.context)
+                    .load(url ?: channelSnippet.thumbnails.high.url)
+                    .into(ivThumbnail)
+                btnLikeImg.visibility = View.GONE
+                btnShareImg.visibility = View.GONE
+            }
         }
 
         withContext(Dispatchers.IO) {
@@ -109,11 +142,11 @@ class VideoDetailFragment : Fragment() {
 
             if (classify != null) {
                 dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, classify, isLikedDate)
+                    MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, dateString, classify, isLikedDate)
                 )
             } else {
                 dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited", null)
+                    MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, dateString, "isVisited", null)
                 )
             }
             Log.d("checkDb", "${dao.getAllVideo()}")
@@ -122,9 +155,24 @@ class VideoDetailFragment : Fragment() {
 
     private fun initListener() = with(binding) {
 
+        btnBack.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .remove(VideoDetailFragment())
+                .commit()
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+
         btnPlay.setOnClickListener {
-            Toast.makeText(context, R.string.toast_detailfragment_play, Toast.LENGTH_SHORT).show()
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=${videoId}")))
+            val urlVideo = "http://www.youtube.com/watch?v=${videoId}"
+            val urlChannel = "http://www.youtube.com/channel/${channelId}"
+
+            if (videoId != null) {
+                Toast.makeText(context, R.string.toast_detailfragment_play1, Toast.LENGTH_SHORT).show()
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(urlVideo)))
+            } else {
+                Toast.makeText(context, R.string.toast_detailfragment_play2, Toast.LENGTH_SHORT).show()
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(urlChannel)))
+            }
         }
 
         btnShareImg.setOnClickListener { // 공유 버튼 클릭 시 실행 (미구현)
@@ -142,7 +190,7 @@ class VideoDetailFragment : Fragment() {
                         }
                     }, 0)
                     dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                        MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, date, "isVisited", null)
+                        MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, date, "isVisited", null)
                     )
                 } else {
                     Handler(Looper.getMainLooper()).postDelayed(Runnable {
@@ -151,7 +199,7 @@ class VideoDetailFragment : Fragment() {
                         }
                     }, 0)
                     dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                        MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, date, "isLiked", dateString)
+                        MyFavoriteVideoEntity(videoId ?: "", videoSnippet.title, videoSnippet.channelTitle, videoSnippet.thumbnails.high.url, date, "isLiked", dateString)
                     )
                 }
             }
