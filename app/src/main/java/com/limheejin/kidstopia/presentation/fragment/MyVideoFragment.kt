@@ -1,28 +1,20 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentMyVideoBinding
-import com.limheejin.kidstopia.model.PopularData
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.adapter.MyFavoriteVideoAdapter
 import com.limheejin.kidstopia.presentation.adapter.VisitedPageAdapter
 import com.limheejin.kidstopia.viewmodel.MyVideoViewModel
 import com.limheejin.kidstopia.viewmodel.MyVideoViewModelFactory
-
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -48,7 +40,6 @@ class MyVideoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentMyVideoBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -59,11 +50,11 @@ class MyVideoFragment : Fragment() {
         initRv()
     }
 
-    fun getItems() = lifecycleScope.launch {
+    private fun getItems() = lifecycleScope.launch {
         myVideoViewModel.getItems()
     }
 
-    fun initRv() {
+    private fun initRv() {
         myVideoViewModel.items.observe(viewLifecycleOwner) { items ->
             val visitedPageAdapter = VisitedPageAdapter(items)
             val myFavoriteVideoAdapter =
@@ -71,31 +62,13 @@ class MyVideoFragment : Fragment() {
 
             myFavoriteVideoAdapter.itemClick = object : MyFavoriteVideoAdapter.ItemClick {
                 override fun itemClick(id: String) {
-                    val videoId = id // 선택한 비디오의 유튜브 비디오 ID값
-                    val videoDetailFragment = VideoDetailFragment()
-                    val bundle = Bundle() // 일단 번들로 구현
-                    bundle.putString("VideoId", videoId)
-                    videoDetailFragment.arguments = bundle
-                    parentFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-                        .replace(R.id.fl, videoDetailFragment)
-                        .addToBackStack(null)
-                        .commit()
+                    setFragment(id)
                 }
             }
 
             visitedPageAdapter.itemClick = object : VisitedPageAdapter.ItemClick {
                 override fun itemClick(id: String) {
-                    val videoId = id // 선택한 비디오의 유튜브 비디오 ID값
-                    val videoDetailFragment = VideoDetailFragment()
-                    val bundle = Bundle() // 일단 번들로 구현
-                    bundle.putString("VideoId", videoId)
-                    videoDetailFragment.arguments = bundle
-                    parentFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-                        .replace(R.id.fl, videoDetailFragment)
-                        .addToBackStack(null)
-                        .commit()
+                    setFragment(id)
                 }
             }
 
@@ -107,6 +80,18 @@ class MyVideoFragment : Fragment() {
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             }
         }
+    }
+
+    private fun setFragment(id: String) {
+        val videoDetailFragment = VideoDetailFragment()
+        val bundle = Bundle() // 일단 번들로 구현
+        bundle.putString("VideoId", id)
+        videoDetailFragment.arguments = bundle
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
+            .replace(R.id.fl, videoDetailFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     companion object {

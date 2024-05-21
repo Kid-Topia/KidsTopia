@@ -17,18 +17,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
 import com.limheejin.kidstopia.model.PopularData
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
-import com.limheejin.kidstopia.presentation.adapter.VisitedPageAdapter
 import com.limheejin.kidstopia.presentation.network.NetworkClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 private const val ARG_PARAM1 = "VideoId"
 private const val ARG_PARAM2 = "param2"
@@ -76,7 +74,6 @@ class VideoDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
-        initListenerCoroutineScope()
     }
 
     override fun onDestroyView() {
@@ -89,7 +86,7 @@ class VideoDetailFragment : Fragment() {
             return@async NetworkClient.youtubeApiVideo.getVideoData(
                 NetworkClient.AUTH_KEY,
                 "snippet, contentDetails",
-                videoId?:""
+                videoId ?: ""
             )
         }
     }
@@ -97,76 +94,29 @@ class VideoDetailFragment : Fragment() {
     private fun initView() = lifecycleScope.launch {
         dataList = deferred.await() // 받아온 동영상 정보 처리가 끝난 후에 dataList에 할당
 
-        with(binding){ // 받아온 동영상 정보로 View 설정
+        with(binding) { // 받아온 동영상 정보로 View 설정
             tvChannelName.text = snippet.channelTitle
             tvTitle.text = snippet.title
             tvDescription.text = snippet.description
             Glide.with(ivThumbnail.context)
-                .load(snippet.thumbnails.medium.url)
+                .load(snippet.thumbnails.maxres.url)
                 .into(ivThumbnail)
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.IO) {
             val classify = videoId?.let { dao.getVideoClassify(it) }
             val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
 
             if (classify != null) {
                 dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(
-                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, classify, isLikedDate
-                    )
+                    MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, classify, isLikedDate)
                 )
             } else {
                 dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(
-                        videoId?:"", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited", null
-                    )
+                    MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, dateString, "isVisited", null)
                 )
             }
             Log.d("checkDb", "${dao.getAllVideo()}")
-        }
-    }
-    private fun initListenerCoroutineScope() = lifecycleScope.launch {
-        binding.btnLikeImg.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
-                val date = videoId?.let { it1 -> dao.getVideoDate(it1) }
-                if (isLikedDate != null) {
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                        run {
-                            Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
-                        }
-                    }, 0)
-                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                        MyFavoriteVideoEntity(
-                            videoId ?: "",
-                            snippet.title,
-                            snippet.channelTitle,
-                            snippet.thumbnails.high.url,
-                            date,
-                            "isVisited",
-                            null
-                        )
-                    )
-                } else {
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                        run {
-                            Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
-                        }
-                    }, 0)
-                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                        MyFavoriteVideoEntity(
-                            videoId ?: "",
-                            snippet.title,
-                            snippet.channelTitle,
-                            snippet.thumbnails.high.url,
-                            date,
-                            "isLiked",
-                            dateString
-                        )
-                    )
-                }
-            }
         }
     }
 
@@ -180,6 +130,33 @@ class VideoDetailFragment : Fragment() {
         btnShareImg.setOnClickListener { // 공유 버튼 클릭 시 실행 (미구현)
             Toast.makeText(context, R.string.toast_detailfragment_share, Toast.LENGTH_SHORT).show()
         }
+
+        binding.btnLikeImg.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val isLikedDate = videoId?.let { dao.getVideoLikedDate(it) }
+                val date = videoId?.let { it1 -> dao.getVideoDate(it1) }
+                if (isLikedDate != null) {
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                        run {
+                            Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
+                        }
+                    }, 0)
+                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                        MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, date, "isVisited", null)
+                    )
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                        run {
+                            Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
+                        }
+                    }, 0)
+                    dao.insertVideo( // DAO에 isVisited 동영상 정보 저장
+                        MyFavoriteVideoEntity(videoId ?: "", snippet.title, snippet.channelTitle, snippet.thumbnails.high.url, date, "isLiked", dateString)
+                    )
+                }
+            }
+        }
+
     }
 
     private fun hideNavigationView(bool: Boolean) {

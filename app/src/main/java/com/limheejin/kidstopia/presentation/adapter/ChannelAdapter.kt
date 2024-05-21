@@ -1,30 +1,26 @@
 package com.limheejin.kidstopia.presentation.adapter
 
-
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.ChannelItemBinding
-import com.limheejin.kidstopia.model.PopularItems
 import com.limheejin.kidstopia.model.database.ChannelData
-import com.limheejin.kidstopia.model.database.ChannelSnippet
 
-class ChannelRVAdapter(private val onItemClick: (ChannelData) -> Unit) :
-    RecyclerView.Adapter<ChannelRVAdapter.ChannelViewHolder>() {
+class ChannelAdapter(private val onItemClick: (ChannelData) -> Unit) :
+    RecyclerView.Adapter<ChannelAdapter.ChannelViewHolder>() {
 
     private var itemsChannel: List<ChannelData> = mutableListOf()
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setItemsChannel(items: List<ChannelData>) {
         this.itemsChannel = items
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelViewHolder {
-        val binding = ChannelItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent, false
-        )
+        val binding = ChannelItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ChannelViewHolder(binding)
     }
 
@@ -37,9 +33,7 @@ class ChannelRVAdapter(private val onItemClick: (ChannelData) -> Unit) :
         return itemsChannel.size
     }
 
-    inner class ChannelViewHolder(val binding: ChannelItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
+    inner class ChannelViewHolder(val binding: ChannelItemBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
                 val position = adapterPosition
@@ -50,12 +44,13 @@ class ChannelRVAdapter(private val onItemClick: (ChannelData) -> Unit) :
         }
 
         fun bind(item: ChannelData) {
-            with(binding){
+            with(binding) {
                 titleChannel.text = item.snippet.title
                 Glide.with(itemView.context)
                     .load(item.snippet.thumbnails?.high?.url)
                     .into(imgChannel)
             }
         }
+
     }
 }
