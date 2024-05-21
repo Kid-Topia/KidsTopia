@@ -32,8 +32,7 @@ interface PopularVideoCategoryInterface {
         @Query("q") query: String,
         @Query("key") key: String,
         @Query("part") part: String,
-        @Query("safeSearch") safeSearch: String = "strict",
-        @Query("type") type: String = "video",
-        @Query("maxResults") maxResults: Int = 8,
-    ): SearchData
+        @Query("videoCategoryId") CategoryId: String,
+        @Query("maxResults") maxResults: Int,
+    ): PopularData
 }

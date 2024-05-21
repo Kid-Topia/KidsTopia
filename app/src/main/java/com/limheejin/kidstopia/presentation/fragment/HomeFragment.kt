@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapterMostPopular: MostPopularRVAdapter
     private lateinit var adapterCategory: CategoryRVAdapter
     private lateinit var adapterChannel: ChannelRVAdapter
-    private lateinit var categoryId: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -41,15 +41,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        categoryId = "22"
 
-        setupMostPopularRV()
-        setupChannelRV()
-        setupCategoryRV()
-        setupRecyclerView()
-        fetchMostPopularVideos()
-        fetchCategory()
-        fetchCategoryIdVideo(categoryId)
+
         setupSpinner()
         setupMostPopularRV()
         setupChannelRV()
@@ -147,7 +140,7 @@ class HomeFragment : Fragment() {
 
     private fun setupCategoryRV() {
         adapterCategory = CategoryRVAdapter(onItemClick = { position ->
-            val MostvideoId = position.id
+            val MostvideoId = position.id.videoId
             val videoDetailFragment = VideoDetailFragment()
             val bundle = Bundle()
             bundle.putString("VideoId", MostvideoId.toString())
