@@ -9,6 +9,5 @@ interface CategoryInterface {
         @Query("key") key: String = NetworkClient.AUTH_KEY,
         @Query("part") part: String = "snippet",
         @Query("regionCode") regionCode: String,
-//        @Query("h1") h1: String
     )
 }

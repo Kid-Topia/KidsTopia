@@ -62,7 +62,5 @@ class RVSearchAdapter(
                     .into(searchitemThumbnail)
             }
         }
-
     }
-
 }
