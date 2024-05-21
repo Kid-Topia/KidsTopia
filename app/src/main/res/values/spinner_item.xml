@@ -3,7 +3,7 @@
     <string-array name="spinner_array">
         <item>음악</item>
         <item>동물</item>
-        <item>여행</item>
-        <item>교육</item>
+        <item>게임</item>
+        <item>과학</item>
     </string-array>
 </resources>
