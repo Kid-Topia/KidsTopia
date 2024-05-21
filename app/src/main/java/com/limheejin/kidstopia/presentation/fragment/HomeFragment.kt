@@ -96,12 +96,10 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             val response = withContext(Dispatchers.IO) {
                 NetworkClient.youtubeApiCategories.getCategoryList(
-                    key = NetworkClient.AUTH_KEY,
-                    part = "snippet",
-                    regionCode = "KR"
+                    key = NetworkClient.AUTH_KEY, part = "snippet", regionCode = "KR"
                 )
             }
-            Log.d("response","${response}")
+            Log.d("response", "${response}")
         }
     }
 
@@ -134,14 +132,14 @@ class HomeFragment : Fragment() {
     private fun setupCategoryRV() {
         adapterCategory = CategoryRVAdapter(onItemClick = { position ->
             val MostvideoId = position.id.videoId
-            Log.d("position","${position.id.videoId}")
+            Log.d("position", "${position.id.videoId}")
             val videoDetailFragment = VideoDetailFragment()
             val bundle = Bundle()
             bundle.putString("VideoId", MostvideoId.toString())
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+            ).add(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
         })
     }
 
@@ -155,7 +153,7 @@ class HomeFragment : Fragment() {
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+            ).add(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
         })
     }
 
@@ -169,7 +167,7 @@ class HomeFragment : Fragment() {
             parentFragmentManager.beginTransaction().setCustomAnimations(
 
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+            ).add(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
 
         })
     }
@@ -183,17 +181,39 @@ class HomeFragment : Fragment() {
             spinner.adapter = adapter
         }
 
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>, view: View?, position: Int, id: Long
+            ) {
 
-                when(position) {
-                    0 -> { fetchCategoryIdVideo("뽀로로 다시보기") }
-                    1 -> { fetchCategoryIdVideo("핑크퐁 다시보기") }
-                    2 -> { fetchCategoryIdVideo("노리q 동물") }
-                    3 -> { fetchCategoryIdVideo("주니토니") }
-                    4 -> { fetchCategoryIdVideo("예림tv") }
-                    5 -> { fetchCategoryIdVideo("깨비키즈 과학") }
-                    6 -> { fetchCategoryIdVideo("아이들교실") }
+                when (position) {
+                    0 -> {
+                        fetchCategoryIdVideo("뽀로로 다시보기")
+                    }
+
+                    1 -> {
+                        fetchCategoryIdVideo("핑크퐁 다시보기")
+                    }
+
+                    2 -> {
+                        fetchCategoryIdVideo("노리q 동물")
+                    }
+
+                    3 -> {
+                        fetchCategoryIdVideo("주니토니")
+                    }
+
+                    4 -> {
+                        fetchCategoryIdVideo("예림tv")
+                    }
+
+                    5 -> {
+                        fetchCategoryIdVideo("깨비키즈 과학")
+                    }
+
+                    6 -> {
+                        fetchCategoryIdVideo("아이들교실")
+                    }
                 }
 //
 //                뽀로로
