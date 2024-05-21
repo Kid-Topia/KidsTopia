@@ -40,6 +40,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        categoryId = "22"
+
+        setupMostPopularRV()
+        setupChannelRV()
+        setupCategoryRV()
+        setupRecyclerView()
+        fetchMostPopularVideos()
+        fetchCategory()
+        fetchCategoryIdVideo(categoryId)
         setupSpinner()
     }
 
@@ -49,7 +58,7 @@ class HomeFragment : Fragment() {
                 val response = withContext(Dispatchers.IO) {
                     NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
                         key = NetworkClient.AUTH_KEY,
-                        part = "snippet",
+                        part = "snippet, status",
                         chart = "mostPopular",
                         maxResults = 5
                     )
@@ -87,19 +96,18 @@ class HomeFragment : Fragment() {
         adapterChannel.setItemsChannel(response.items)
     }
 
-//    private fun fetchCategory() {
-//        lifecycleScope.launch {
-////            val response = withContext(Dispatchers.IO) {
-////                NetworkClient.youtubeApiCategories.getCategoryList(
-////                    key = NetworkClient.AUTH_KEY,
-////                    part = "snippet",
-////                    regionCode = "KR"
-////                )
-////            }
-////            Log.d("response","${response}")
-////            adapterCategoty.setCategoryItems(response.items)
-//        }
-//    }
+    private fun fetchCategory() {
+        lifecycleScope.launch {
+            val response = withContext(Dispatchers.IO) {
+                NetworkClient.youtubeApiCategories.getCategoryList(
+                    key = NetworkClient.AUTH_KEY,
+                    part = "snippet",
+                    regionCode = "KR"
+                )
+            }
+            Log.d("response","${response}")
+        }
+    }
 
     private fun setupRecyclerView() {
         // 수평 스크롤
@@ -180,7 +188,7 @@ class HomeFragment : Fragment() {
         }
 
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 when(position) {
                     0 -> { selectCategory("10") }

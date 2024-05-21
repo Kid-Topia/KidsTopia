@@ -12,7 +12,7 @@ data class PopularItems(
     val kind: String,
     val etag: String,
     val id: String,
-    val snippet: PopularSnippet,
+    val snippet: PopularSnippet
 )
 data class PopularSnippet(
     val publishedAt: String,
@@ -22,7 +22,7 @@ data class PopularSnippet(
     val thumbnails: Thumbnails,
     val channelTitle: String,
     val tags: MutableList<String>,
-    val categoryId: String
+    val categoryId: String,
 )
 
 /* 필요한 데이터는 데이터 클래스에 추가해서 가져다 써주세요

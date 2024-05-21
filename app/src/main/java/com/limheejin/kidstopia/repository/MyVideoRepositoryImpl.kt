@@ -18,4 +18,16 @@ class MyVideoRepositoryImpl(
     override suspend fun getAllVideo(): MutableList<MyFavoriteVideoEntity> {
         return myFavoriteVideoDao.getAllVideo()
     }
+
+    override suspend fun getVideoClassify(video_id: String): String {
+        return myFavoriteVideoDao.getVideoClassify(video_id)
+    }
+
+    override suspend fun getIsLikedDate(video_id: String): String {
+        return myFavoriteVideoDao.getVideoLikedDate(video_id)
+    }
+
+    override suspend fun getDate(video_id: String): String {
+        return myFavoriteVideoDao.getVideoDate(video_id)
+    }
 }
