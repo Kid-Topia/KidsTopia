@@ -104,15 +104,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 //        }
 //    }
 
-    @SuppressLint("MissingSuperCall")
-    override fun onBackPressed() {
-    val dialog = CloseDialog()
-        dialog.show(supportFragmentManager, "CloseDialog")
-//    super.onBackPressed()
+//    @SuppressLint("MissingSuperCall")
+//    override fun onBackPressed() {
+//    val dialog = CloseDialog()
+//        dialog.show(supportFragmentManager, "CloseDialog")
 //        val builder = AlertDialog.Builder(this)
 //        val layout = layoutInflater.inflate(R.layout.dialog)
 //        builder.setView(layout)
-    }
+//    }
 }
 
 
