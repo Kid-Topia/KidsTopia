@@ -41,23 +41,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        categoryId = "22"
 
-        setupMostPopularRV()
-        setupChannelRV()
-        setupCategoryRV()
-        setupRecyclerView()
-        fetchMostPopularVideos()
-        fetchCategory()
-        fetchCategoryIdVideo(categoryId)
         setupSpinner()
         setupMostPopularRV()
         setupChannelRV()
         setupCategoryRV()
         setupRecyclerView()
         fetchMostPopularVideos()
-        fetchCategoryIdVideo("뽀로로")
-
+        fetchCategoryIdVideo("뽀로로 다시보기")
 
     }
 
@@ -82,13 +73,8 @@ class HomeFragment : Fragment() {
 
     private fun fetchCategoryIdVideo(query: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiSearch.getSearchList(
-                query = query ,
-                key = NetworkClient.AUTH_KEY,
-                part = "snippet",
-                safeSearch = "strict",
-                type = "video",
-                maxResults = 5,
+            NetworkClient.youtubeApiOrderSearch.getSearchList(
+                query = query
             )
         }
         adapterCategory.setCategoryItems(response.items)
@@ -147,7 +133,8 @@ class HomeFragment : Fragment() {
 
     private fun setupCategoryRV() {
         adapterCategory = CategoryRVAdapter(onItemClick = { position ->
-            val MostvideoId = position.id
+            val MostvideoId = position.id.videoId
+            Log.d("position","${position.id.videoId}")
             val videoDetailFragment = VideoDetailFragment()
             val bundle = Bundle()
             bundle.putString("VideoId", MostvideoId.toString())
@@ -200,20 +187,27 @@ class HomeFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 when(position) {
-                    0 -> { selectCategory("10") }
-                    1 -> { selectCategory("15") }
-                    2 -> { selectCategory("20") }
-                    3 -> { selectCategory("28") }
+                    0 -> { fetchCategoryIdVideo("뽀로로 다시보기") }
+                    1 -> { fetchCategoryIdVideo("핑크퐁 다시보기") }
+                    2 -> { fetchCategoryIdVideo("노리q 동물") }
+                    3 -> { fetchCategoryIdVideo("주니토니") }
+                    4 -> { fetchCategoryIdVideo("예림tv") }
+                    5 -> { fetchCategoryIdVideo("깨비키즈 과학") }
+                    6 -> { fetchCategoryIdVideo("아이들교실") }
                 }
+//
+//                뽀로로
+//                핑크퐁
+//                동물 : 노리q
+//                음악 : 주니토니
+//                동화 : 예림tv
+//                과학 : 깨비키즈 과학
+//                교육 : 아이들교실
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-    }
-
-    private fun selectCategory(categoryId: String){
-
     }
 
     override fun onDestroyView() {
