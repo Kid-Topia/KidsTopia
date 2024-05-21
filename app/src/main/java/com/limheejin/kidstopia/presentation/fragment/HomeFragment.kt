@@ -21,7 +21,6 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.http.Query
 
 class HomeFragment : Fragment() {
 
@@ -48,7 +47,6 @@ class HomeFragment : Fragment() {
         setupCategoryRV()
         setupRecyclerView()
         fetchMostPopularVideos()
-        fetchCategoryIdVideo("뽀로로 다시보기")
 
     }
 
@@ -92,6 +90,7 @@ class HomeFragment : Fragment() {
         adapterChannel.setItemsChannel(response.items)
     }
 
+
     private fun setupRecyclerView() {
         // 수평 스크롤
         val layoutManagerMostPopular = LinearLayoutManager(
@@ -128,7 +127,7 @@ class HomeFragment : Fragment() {
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+            ).add(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
         })
     }
 
@@ -141,7 +140,7 @@ class HomeFragment : Fragment() {
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+            ).add(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
         })
     }
 
@@ -155,7 +154,7 @@ class HomeFragment : Fragment() {
             parentFragmentManager.beginTransaction().setCustomAnimations(
 
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
-            ).replace(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
+            ).add(R.id.fl, videoDetailFragment).addToBackStack(null).commit()
 
         })
     }
