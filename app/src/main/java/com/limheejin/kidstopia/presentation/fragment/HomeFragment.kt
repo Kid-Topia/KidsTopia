@@ -21,6 +21,7 @@ import com.limheejin.kidstopia.presentation.network.NetworkClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.http.Query
 
 class HomeFragment : Fragment() {
 
@@ -40,7 +41,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupSpinner()
+        setupMostPopularRV()
+        setupChannelRV()
+        setupCategoryRV()
+        setupRecyclerView()
+        fetchMostPopularVideos()
+        fetchCategoryIdVideo("뽀로로 다시보기")
+
     }
 
     private fun fetchMostPopularVideos() {
@@ -49,7 +58,7 @@ class HomeFragment : Fragment() {
                 val response = withContext(Dispatchers.IO) {
                     NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
                         key = NetworkClient.AUTH_KEY,
-                        part = "snippet",
+                        part = "snippet, status",
                         chart = "mostPopular",
                         maxResults = 5
                     )
@@ -62,14 +71,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun fetchCategoryIdVideo(categoryId: String) = lifecycleScope.launch {
+    private fun fetchCategoryIdVideo(query: String) = lifecycleScope.launch {
         val response = withContext(Dispatchers.IO) {
-            NetworkClient.youtubeApiCategoryVideoList.getPopularVideoCategoryList(
-                key = NetworkClient.AUTH_KEY,
-                part = "snippet",
-                chart = "mostPopular",
-                categoryId,
-                maxResults = 5
+            NetworkClient.youtubeApiOrderSearch.getSearchList(
+                query = query
             )
         }
         adapterCategory.setCategoryItems(response.items)
@@ -87,19 +92,18 @@ class HomeFragment : Fragment() {
         adapterChannel.setItemsChannel(response.items)
     }
 
-//    private fun fetchCategory() {
-//        lifecycleScope.launch {
-////            val response = withContext(Dispatchers.IO) {
-////                NetworkClient.youtubeApiCategories.getCategoryList(
-////                    key = NetworkClient.AUTH_KEY,
-////                    part = "snippet",
-////                    regionCode = "KR"
-////                )
-////            }
-////            Log.d("response","${response}")
-////            adapterCategoty.setCategoryItems(response.items)
-//        }
-//    }
+    private fun fetchCategory() {
+        lifecycleScope.launch {
+            val response = withContext(Dispatchers.IO) {
+                NetworkClient.youtubeApiCategories.getCategoryList(
+                    key = NetworkClient.AUTH_KEY,
+                    part = "snippet",
+                    regionCode = "KR"
+                )
+            }
+            Log.d("response","${response}")
+        }
+    }
 
     private fun setupRecyclerView() {
         // 수평 스크롤
@@ -125,15 +129,15 @@ class HomeFragment : Fragment() {
         binding.homeChannel.layoutManager = layoutManagerChannel
         binding.homeChannel.adapter = adapterChannel
 
-
     }
 
     private fun setupCategoryRV() {
         adapterCategory = CategoryRVAdapter(onItemClick = { position ->
-            val MostvideoId = position.id
+            val MostvideoId = position.id.videoId
+            Log.d("position","${position.id.videoId}")
             val videoDetailFragment = VideoDetailFragment()
             val bundle = Bundle()
-            bundle.putString("VideoId", MostvideoId)
+            bundle.putString("VideoId", MostvideoId.toString())
             videoDetailFragment.arguments = bundle
             parentFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down
@@ -180,28 +184,30 @@ class HomeFragment : Fragment() {
         }
 
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 when(position) {
-                    0 -> { selectCategory("10") }
-                    1 -> { selectCategory("15") }
-                    2 -> { selectCategory("20") }
-                    3 -> { selectCategory("28") }
+                    0 -> { fetchCategoryIdVideo("뽀로로 다시보기") }
+                    1 -> { fetchCategoryIdVideo("핑크퐁 다시보기") }
+                    2 -> { fetchCategoryIdVideo("노리q 동물") }
+                    3 -> { fetchCategoryIdVideo("주니토니") }
+                    4 -> { fetchCategoryIdVideo("예림tv") }
+                    5 -> { fetchCategoryIdVideo("깨비키즈 과학") }
+                    6 -> { fetchCategoryIdVideo("아이들교실") }
                 }
+//
+//                뽀로로
+//                핑크퐁
+//                동물 : 노리q
+//                음악 : 주니토니
+//                동화 : 예림tv
+//                과학 : 깨비키즈 과학
+//                교육 : 아이들교실
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-    }
-
-    private fun selectCategory(categoryId: String){
-        setupMostPopularRV()
-        setupChannelRV()
-        setupCategoryRV()
-        setupRecyclerView()
-        fetchMostPopularVideos()
-        fetchCategoryIdVideo(categoryId)
     }
 
     override fun onDestroyView() {

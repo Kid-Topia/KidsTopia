@@ -18,6 +18,21 @@ interface SearchInterface {
     ): SearchData
 }
 
+interface SearchOrderInterface {
+    @GET("search")
+    suspend fun getSearchList(
+        @Query("q") query: String,
+        @Query("key") key: String = AUTH_KEY,
+        @Query("part") part: String = "snippet",
+        @Query("safeSearch") safeSearch: String = "strict",
+        @Query("type") type: String = "video",
+        @Query("maxResults") maxResults: Int = 8,
+        @Query("order") order : String = "viewCount",
+        @Query("regionCode") regionCode : String = "KR"
+
+    ): SearchData
+}
+
 //        /* CategoryId
 //        15 - Pets & Animals,   1 -  Film & Animation
 //        27 - Education,        31 - Anime/Animation
