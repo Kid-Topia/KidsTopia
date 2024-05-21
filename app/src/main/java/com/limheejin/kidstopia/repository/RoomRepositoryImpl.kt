@@ -2,11 +2,10 @@ package com.limheejin.kidstopia.repository
 
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
-import kotlinx.coroutines.flow.Flow
 
-class MyVideoRepositoryImpl(
+class RoomRepositoryImpl(
     private val myFavoriteVideoDao: MyFavoriteVideoDAO
-): MyVideoRepository {
+): RoomRepository {
     override suspend fun insertVideo(myFavoriteVideo: MyFavoriteVideoEntity) {
         myFavoriteVideoDao.insertVideo(myFavoriteVideo)
     }

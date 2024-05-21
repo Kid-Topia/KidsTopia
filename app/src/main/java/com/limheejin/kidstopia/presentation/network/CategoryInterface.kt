@@ -1,5 +1,6 @@
 package com.limheejin.kidstopia.presentation.network
 
+import com.limheejin.kidstopia.model.PopularData
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -1,20 +1,16 @@
 package com.limheejin.kidstopia.repository
 
-import android.app.Application
-import androidx.lifecycle.MutableLiveData
-import androidx.room.Dao
-import androidx.room.util.query
+
+import com.limheejin.kidstopia.model.ChannelData
 import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.SearchData
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
-import com.limheejin.kidstopia.presentation.network.PopularVideoInterface
+import com.limheejin.kidstopia.presentation.network.ChannelInterface
 import com.limheejin.kidstopia.presentation.network.SearchInterface
 import com.limheejin.kidstopia.presentation.network.VideoInterface
 
-class RepositoryImpl(
+class NetworkRepositoryImpl(
     private val videoInterface : VideoInterface,
+    private val channelInterface : ChannelInterface,
     private val searchInterface: SearchInterface,
 ): Repository {
 
@@ -23,6 +19,14 @@ class RepositoryImpl(
             AUTH_KEY,
             part,
             videoId
+        )
+    }
+
+    override suspend fun getChannel(AUTH_KEY: String, part: String, id: String): ChannelData {
+        return channelInterface.getChannelData(
+            AUTH_KEY,
+            part,
+            id
         )
     }
 

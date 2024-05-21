@@ -1,5 +1,6 @@
 package com.limheejin.kidstopia.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ class RVSearchAdapter(
 
     private var items: List<SearchItems> = listOf()
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setItems(items: List<SearchItems>) {
         this.items = items
         notifyDataSetChanged()
@@ -29,7 +31,9 @@ class RVSearchAdapter(
         holder.bind(currentItem)
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int {
+        return items.size
+    }
 
     inner class MyViewHolder(val binding: RvSearchfragmentItemBinding) : RecyclerView.ViewHolder(binding.root){
         init {

@@ -9,11 +9,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
-import com.limheejin.kidstopia.repository.MyVideoRepository
-import com.limheejin.kidstopia.repository.MyVideoRepositoryImpl
+import com.limheejin.kidstopia.repository.RoomRepository
+import com.limheejin.kidstopia.repository.RoomRepositoryImpl
 import kotlinx.coroutines.launch
 
-class MyVideoViewModel(private val repository: MyVideoRepository): ViewModel() {
+class MyVideoViewModel(private val repository: RoomRepository): ViewModel() {
 
     private val _items: MutableLiveData<MutableList<MyFavoriteVideoEntity>> = MutableLiveData()
     val items: LiveData<MutableList<MyFavoriteVideoEntity>> get() = _items
@@ -24,7 +24,7 @@ class MyVideoViewModel(private val repository: MyVideoRepository): ViewModel() {
 }
 
 class MyVideoViewModelFactory(context: Context) : ViewModelProvider.Factory {
-    private val repository = MyVideoRepositoryImpl(MyFavoriteVideoDatabase.getDatabase(context).getDao())
+    private val repository = RoomRepositoryImpl(MyFavoriteVideoDatabase.getDatabase(context).getDao())
     override fun <T : ViewModel> create(
         modelClass: Class<T>,
         extras: CreationExtras
