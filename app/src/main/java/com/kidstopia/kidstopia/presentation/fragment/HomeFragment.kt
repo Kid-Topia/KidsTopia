@@ -42,10 +42,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getItems()
+//        getItems()
         setupSpinner()
-        setupRecyclerView()
-        setupObservers()
+//        setupRecyclerView()
+//        setupObservers()
 
     }
 
@@ -74,15 +74,15 @@ class HomeFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                when (position) {
-                    0 -> getQuery("뽀로로 다시보기") // 뽀로로
-                    1 -> getQuery("핑크퐁 다시보기") // 핑크퐁
-                    2 -> getQuery("노리q 동물") // 동물 : 노리q
-                    3 -> getQuery("주니토니") // 음악 : 주니토니
-                    4 -> getQuery("예림tv") // 동화 : 예림tv
-                    5 -> getQuery("깨비키즈 과학") // 과학 : 깨비키즈 과학
-                    6 -> getQuery("아이들교실") // 교육 : 아이들교실
-                }
+//                when (position) {
+//                    0 -> getQuery("뽀로로 다시보기") // 뽀로로
+//                    1 -> getQuery("핑크퐁 다시보기") // 핑크퐁
+//                    2 -> getQuery("노리q 동물") // 동물 : 노리q
+//                    3 -> getQuery("주니토니") // 음악 : 주니토니
+//                    4 -> getQuery("예림tv") // 동화 : 예림tv
+//                    5 -> getQuery("깨비키즈 과학") // 과학 : 깨비키즈 과학
+//                    6 -> getQuery("아이들교실") // 교육 : 아이들교실
+//                }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
@@ -142,7 +142,7 @@ class HomeFragment : Fragment() {
         videoDetailFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-            .replace(R.id.fl, videoDetailFragment)
+            .add(R.id.fl, videoDetailFragment)
             .addToBackStack(null)
             .commit()
     }

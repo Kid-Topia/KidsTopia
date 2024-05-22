@@ -1,5 +1,7 @@
 package com.kidstopia.kidstopia.presentation.activity
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -12,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kidstopia.kidstopia.R
 import com.kidstopia.kidstopia.databinding.ActivityMainBinding
+import com.kidstopia.kidstopia.databinding.DialogExitBinding
 import com.kidstopia.kidstopia.model.database.MyFavoriteVideoDAO
 import com.kidstopia.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.kidstopia.kidstopia.presentation.fragment.HomeFragment
@@ -89,26 +92,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onBackPressed() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
-        val builder = AlertDialog.Builder(this)
-        builder.setView(dialogView)
+        val dialogBinding = DialogExitBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
             .setCancelable(false)
+            .create()
 
-        val alertDialog = builder.create()
         // 다이얼로그의 Radius를 적용하기 위해 기존 다이얼로그의 builder 배경을 transparent로 설정
-        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
-        dialogView.findViewById<AppCompatButton>(R.id.btn_confirm).setOnClickListener {
-            alertDialog.dismiss()
+        dialogBinding.btnConfirm.setOnClickListener {
+            dialog.dismiss()
             super.onBackPressed()  // 확인 버튼을 누르면 앱 종료
         }
 
-        dialogView.findViewById<AppCompatButton>(R.id.btn_cancel).setOnClickListener {
-            alertDialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
+        dialogBinding.btnCancel.setOnClickListener {
+            dialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
         }
 
-        alertDialog.show()
+        dialog.show()
     }
 }
 
