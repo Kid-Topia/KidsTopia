@@ -91,14 +91,14 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/spinner_style"
-            android:dropDownVerticalOffset="24dp"
+            android:dropDownWidth="match_parent"
+            android:dropDownVerticalOffset="35dp"
             android:entries="@array/spinner_array"
+            android:popupBackground="@android:color/transparent"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/home_category_vidio"
-            app:layout_constraintTop_toTopOf="parent"
-            android:dropDownWidth="match_parent"
-            android:popupBackground="@android:color/transparent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
