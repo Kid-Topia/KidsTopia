@@ -43,20 +43,11 @@ class HomeViewModel(
     fun getSearchData(query: String) = viewModelScope.launch {
         val searchData = networkRepository.getSearchOrderVideoList(query)
         _getSearchData.value = searchData.items
-    }
 
-    fun getChannelList() = viewModelScope.launch {
-        val channelList = _getSearchData.value?.joinToString { it.snippet.channelId }
-        if (channelList != null) {
-            getChannelData(channelList)
-        }
-    }
-
-    fun getChannelData(channelList: String) = viewModelScope.launch {
         val channelData = networkRepository.getChannel(
             AUTH_KEY = NetworkClient.AUTH_KEY,
             part = "snippet",
-            id = channelList
+            id = searchData.items.joinToString { it.snippet.channelId }
         )
         _getChannelData.value = channelData.items
     }

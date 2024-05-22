@@ -89,26 +89,30 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onBackPressed() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
-        val builder = AlertDialog.Builder(this)
-        builder.setView(dialogView)
-            .setCancelable(false)
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
+            val builder = AlertDialog.Builder(this)
+            builder.setView(dialogView)
+                .setCancelable(false)
 
-        val alertDialog = builder.create()
-        // 다이얼로그의 Radius를 적용하기 위해 기존 다이얼로그의 builder 배경을 transparent로 설정
-        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            val alertDialog = builder.create()
+            // 다이얼로그의 Radius를 적용하기 위해 기존 다이얼로그의 builder 배경을 transparent로 설정
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
-        dialogView.findViewById<AppCompatButton>(R.id.btn_confirm).setOnClickListener {
-            alertDialog.dismiss()
-            super.onBackPressed()  // 확인 버튼을 누르면 앱 종료
+            // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
+            dialogView.findViewById<AppCompatButton>(R.id.btn_confirm).setOnClickListener {
+                alertDialog.dismiss()
+                super.onBackPressed()  // 확인 버튼을 누르면 앱 종료
+            }
+
+            dialogView.findViewById<AppCompatButton>(R.id.btn_cancel).setOnClickListener {
+                alertDialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
+            }
+
+            alertDialog.show()
+        } else {
+            supportFragmentManager.popBackStack()
         }
-
-        dialogView.findViewById<AppCompatButton>(R.id.btn_cancel).setOnClickListener {
-            alertDialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
-        }
-
-        alertDialog.show()
     }
 }
 

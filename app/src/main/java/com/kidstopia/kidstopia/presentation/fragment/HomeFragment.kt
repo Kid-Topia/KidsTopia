@@ -19,7 +19,6 @@ import com.kidstopia.kidstopia.presentation.adapter.MostPopularVideoAdapter
 import com.kidstopia.kidstopia.viewmodel.HomeViewModel
 import com.kidstopia.kidstopia.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.launch
-
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -41,11 +40,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         getItems()
         setupSpinner()
-        setupRecyclerView()
         setupObservers()
+        setupRecyclerView()
 
     }
 
@@ -87,6 +85,26 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+
+    }
+
+    private fun getQuery(query: String) = lifecycleScope.launch {
+        viewModel.getSearchData(query)
+    }
+
+    private fun setupObservers() {
+        viewModel.getSearchData.observe(viewLifecycleOwner) { searchData ->
+            adapterCategory.setCategoryItems(searchData)
+        }
+
+        viewModel.getChannelData.observe(viewLifecycleOwner) { channelData ->
+            adapterChannel.setItemsChannel(channelData)
+        }
+
+        viewModel.getPopularData.observe(viewLifecycleOwner) { popularData ->
+            adapterMostPopular.setItems(popularData)
+
+        }
     }
 
     private fun setupRecyclerView() {
@@ -115,26 +133,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupObservers() {
-        viewModel.getSearchData.observe(viewLifecycleOwner) { searchData ->
-            adapterCategory.setCategoryItems(searchData)
-        }
-
-        viewModel.getChannelData.observe(viewLifecycleOwner) { channelData ->
-            adapterChannel.setItemsChannel(channelData)
-        }
-
-        viewModel.getPopularData.observe(viewLifecycleOwner) { popularData ->
-            adapterMostPopular.setItems(popularData)
-
-        }
-    }
-
-    private fun getQuery(query: String) = lifecycleScope.launch {
-        viewModel.getSearchData(query)
-        viewModel.getChannelList()
-    }
-
     private fun setFragment(id: String?, param: String) {
         val videoDetailFragment = VideoDetailFragment()
         val bundle = Bundle()
@@ -142,7 +140,7 @@ class HomeFragment : Fragment() {
         videoDetailFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-            .replace(R.id.fl, videoDetailFragment)
+            .add(R.id.fl, videoDetailFragment)
             .addToBackStack(null)
             .commit()
     }
