@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.kidstopia.kidstopia"
+    namespace = "com.limheejin.kidstopia"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.kidstopia.kidstopia"
+        applicationId = "com.limheejin.kidstopia"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
