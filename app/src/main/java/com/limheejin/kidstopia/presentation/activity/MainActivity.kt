@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-
         supportFragmentManager.fragments.forEach { fragment ->
             if (fragment.isVisible) {
                 fragmentTransaction.hide(fragment)

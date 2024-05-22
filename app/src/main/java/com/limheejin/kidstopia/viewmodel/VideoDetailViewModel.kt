@@ -17,17 +17,17 @@ import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 import com.limheejin.kidstopia.presentation.network.NetworkClient
+import com.limheejin.kidstopia.repository.NetworkRepository
 import com.limheejin.kidstopia.repository.NetworkRepositoryImpl
 import com.limheejin.kidstopia.repository.RoomRepository
 import com.limheejin.kidstopia.repository.RoomRepositoryImpl
-import com.limheejin.kidstopia.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class VideoDetailViewModel(
     private val databaseRepository: RoomRepository,
-    private val networkRepository: Repository
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val _videoData = MutableLiveData<PopularData>()
     private val _channelData = MutableLiveData<ChannelData>()
@@ -113,7 +113,8 @@ class VideoDetailViewModelFactory(context: Context) : ViewModelProvider.Factory 
     private val networkRepository = NetworkRepositoryImpl(
         NetworkClient.youtubeApiVideo,
         NetworkClient.youtubeApiChannel,
-        NetworkClient.youtubeApiSearch
+        NetworkClient.youtubeApiSearch,
+        NetworkClient.youtubeApiPopularVideo
     )
 
     override fun <T : ViewModel> create(

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
+import com.limheejin.kidstopia.presentation.adapter.VisitedPageAdapter
 import com.limheejin.kidstopia.repository.RoomRepository
 import com.limheejin.kidstopia.repository.RoomRepositoryImpl
 import kotlinx.coroutines.launch

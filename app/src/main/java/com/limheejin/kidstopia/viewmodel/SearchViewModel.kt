@@ -67,7 +67,8 @@ class SearchVideoViewModelFactory : ViewModelProvider.Factory {
     private val repository = NetworkRepositoryImpl(
         NetworkClient.youtubeApiVideo,
         NetworkClient.youtubeApiChannel,
-        NetworkClient.youtubeApiSearch
+        NetworkClient.youtubeApiSearch,
+        NetworkClient.youtubeApiPopularVideo
     )
     override fun <T : ViewModel> create(
         modelClass: Class<T>,

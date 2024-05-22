@@ -21,7 +21,6 @@ class SearchFragment : Fragment() {
     // 뷰모델 생성
     private val viewModel by viewModels<SearchViewModel> {
         SearchVideoViewModelFactory()
-
     }
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchAdapter: RVSearchAdapter

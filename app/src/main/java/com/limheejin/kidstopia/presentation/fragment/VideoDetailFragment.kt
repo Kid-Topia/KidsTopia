@@ -3,34 +3,18 @@ package com.limheejin.kidstopia.presentation.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
-import com.limheejin.kidstopia.model.ChannelData
-import com.limheejin.kidstopia.model.PopularData
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
-import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
-import com.limheejin.kidstopia.presentation.network.NetworkClient
 import com.limheejin.kidstopia.viewmodel.VideoDetailViewModel
 import com.limheejin.kidstopia.viewmodel.VideoDetailViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
 
 private const val ARG_PARAM1 = "VideoId"
 private const val ARG_PARAM2 = "ChannelId"
@@ -66,7 +50,7 @@ class VideoDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserve()
+        setupObservers()
         initListener()
     }
 
@@ -80,9 +64,10 @@ class VideoDetailFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         parentFragmentManager.popBackStack()
+
     }
 
-    private fun initObserve() {
+    private fun setupObservers() {
         viewModel.videoData.observe(viewLifecycleOwner) { data ->
             val snippet = data.items[0].snippet
             var url = snippet.thumbnails.maxres?.url
