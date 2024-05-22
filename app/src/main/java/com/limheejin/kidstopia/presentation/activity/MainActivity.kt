@@ -1,6 +1,5 @@
 package com.limheejin.kidstopia.presentation.activity
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -26,8 +25,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var dao: MyFavoriteVideoDAO
-    override fun onCreate(savedInstanceState: Bundle?) {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -38,11 +37,18 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
 
         // 데이터베이스 모든정보 지울때 잠깐 주석풀어 사용
-//        deleteAllDatabaseInfo()
-
+        // deleteAllDatabaseInfo()
         dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
         binding.nav.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fl, HomeFragment()).commit()
+    }
+
+    private fun deleteAllDatabaseInfo() {
+        CoroutineScope(Dispatchers.IO).launch {
+            dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
+            dao.deleteVisitedVideo()
+            dao.deleteLikedVideo()
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -80,14 +86,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
         fragmentTransaction.commitAllowingStateLoss()
         return true
-    }
-
-    private fun deleteAllDatabaseInfo() {
-        CoroutineScope(Dispatchers.IO).launch {
-            dao = MyFavoriteVideoDatabase.getDatabase(application).getDao()
-            dao.deleteVisitedVideo()
-            dao.deleteLikedVideo()
-        }
     }
 
     override fun onBackPressed() {

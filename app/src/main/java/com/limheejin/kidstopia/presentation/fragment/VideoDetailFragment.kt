@@ -13,11 +13,9 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.FragmentVideoDetailBinding
+import com.limheejin.kidstopia.model.formatDecimal
 import com.limheejin.kidstopia.viewmodel.VideoDetailViewModel
 import com.limheejin.kidstopia.viewmodel.VideoDetailViewModelFactory
-
-private const val ARG_PARAM1 = "VideoId"
-private const val ARG_PARAM2 = "ChannelId"
 
 class VideoDetailFragment : Fragment() {
     private var videoId: String? = null
@@ -26,6 +24,7 @@ class VideoDetailFragment : Fragment() {
     private val binding by lazy {
         FragmentVideoDetailBinding.inflate(layoutInflater)
     }
+
     private val viewModel by viewModels<VideoDetailViewModel> {
         VideoDetailViewModelFactory(requireContext())
     }
@@ -33,8 +32,8 @@ class VideoDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            videoId = it.getString(ARG_PARAM1)
-            channelId = it.getString(ARG_PARAM2)
+            videoId = it.getString("VideoId")
+            channelId = it.getString("ChannelId")
         }
         videoId?.let { viewModel.fetchVideoData(it) }
         channelId?.let { viewModel.fetchChannelData(it) }
@@ -91,7 +90,8 @@ class VideoDetailFragment : Fragment() {
                 url = snippet.thumbnails.high.url
             }
             with(binding) { // 받아온 동영상 정보로 View 설정
-                tvChannelName.text = "구독자 수 : ${data.items[0].statistics.subscriberCount}"
+                val subscribeNumber = formatDecimal(data.items[0].statistics.subscriberCount.toInt())
+                tvChannelName.text = "구독자 수 : $subscribeNumber"
                 tvTitle.text = snippet.title
                 tvDescription.text = snippet.description
                 Glide.with(ivThumbnail.context)
@@ -117,10 +117,12 @@ class VideoDetailFragment : Fragment() {
             val urlChannel = "http://www.youtube.com/channel/${channelId}"
 
             if (videoId != null) {
-                Toast.makeText(context, R.string.toast_detailfragment_play1, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_detailfragment_play1, Toast.LENGTH_SHORT)
+                    .show()
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(urlVideo)))
             } else {
-                Toast.makeText(context, R.string.toast_detailfragment_play2, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_detailfragment_play2, Toast.LENGTH_SHORT)
+                    .show()
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(urlChannel)))
             }
         }
@@ -132,7 +134,6 @@ class VideoDetailFragment : Fragment() {
         binding.btnLikeImg.setOnClickListener {
             videoId?.let { viewModel.updateLikeStatus(it, requireContext()) }
         }
-
     }
 
     private fun hideNavigationView(bool: Boolean) {
@@ -141,16 +142,4 @@ class VideoDetailFragment : Fragment() {
             nav?.visibility = View.GONE
         } else nav?.visibility = View.VISIBLE
     }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            VideoDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
-
 }

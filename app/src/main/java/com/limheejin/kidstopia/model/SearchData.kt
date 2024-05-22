@@ -1,7 +1,5 @@
 package com.limheejin.kidstopia.model
 
-
-
 data class SearchData(
     val kind: String,
     val etag: String,

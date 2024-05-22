@@ -54,6 +54,10 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    private fun getItems() = lifecycleScope.launch {
+        viewModel.getPopularData()
+    }
+
     private fun setupSpinner() {
         val spinner: Spinner = binding.spinner
         ArrayAdapter.createFromResource(
@@ -64,7 +68,12 @@ class HomeFragment : Fragment() {
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 when (position) {
                     0 -> getQuery("뽀로로 다시보기") // 뽀로로
                     1 -> getQuery("핑크퐁 다시보기") // 핑크퐁
@@ -78,18 +87,33 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-
-    }
-    private fun getItems() = lifecycleScope.launch {
-        viewModel.getPopularData()
-
-    }
-    private fun getQuery(query: String) = lifecycleScope.launch {
-        Log.d("CheckQuery", "$query")
-        viewModel.getSearchData(query)
-        viewModel.getChannelList()
     }
 
+    private fun setupRecyclerView() {
+        // onItemClick 구현
+        adapterMostPopular = MostPopularVideoAdapter(onItemClick = { position ->
+            setFragment(position.id, "VideoId")
+        })
+        adapterCategory = CategoryAdapter(onItemClick = { position ->
+            setFragment(position.id.videoId, "VideoId")
+        })
+        adapterChannel = ChannelAdapter(onItemClick = { position ->
+            setFragment(position.id, "ChannelId")
+        })
+
+        //어댑터 연결
+        binding.apply {
+            homeMostVidio.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            homeMostVidio.adapter = adapterMostPopular
+            homeCategory.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            homeCategory.adapter = adapterCategory
+            homeChannel.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            homeChannel.adapter = adapterChannel
+        }
+    }
 
     private fun setupObservers() {
         viewModel.getSearchData.observe(viewLifecycleOwner) { searchData ->
@@ -106,65 +130,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-//    private fun fetchMostPopularVideo() = lifecycleScope.launch {
-//        try {
-//            val response = withContext(Dispatchers.IO) {
-//                NetworkClient.youtubeApiPopularVideo.getPopularVideoList(
-//                    key = NetworkClient.AUTH_KEY,
-//                    part = "snippet",
-//                    chart = "mostPopular",
-//                    maxResults = 5
-//                )
-//            }
-//            adapterMostPopular.setItems(response.items)
-//        } catch (e: Exception) {
-//            Toast.makeText(requireContext(), "인기 동영상이 정상적으로 연결되지 않았습니다.", Toast.LENGTH_SHORT)
-//                .show()
-//        }
-//    }
-//    private fun fetchCategoryIdVideo(query: String) = lifecycleScope.launch {
-//        val response = withContext(Dispatchers.IO) {
-//            NetworkClient.youtubeApiOrderSearch.getSearchList(
-//                query = query
-//            )
-//        }
-//        adapterCategory.setCategoryItems(response.items)
-//        val channelList = response.items.joinToString { it.snippet.channelId }
-//        Log.d("channelList", channelList)
-//        fetchChannel(channelList)
-//    }
-//
-//    private fun fetchChannel(channelList: String) = lifecycleScope.launch {
-//        val response = withContext(Dispatchers.IO) {
-//            NetworkClient.youtubeApiChannel.getChannelData(
-//                key = NetworkClient.AUTH_KEY, part = "snippet", id = channelList
-//            )
-//        }
-//        adapterChannel.setItemsChannel(response.items)
-//    }
-
-
-    private fun setupRecyclerView() {
-        // onItemClick 구현
-        adapterMostPopular = MostPopularVideoAdapter(onItemClick = { position ->
-            setFragment(position.id,"VideoId")
-        })
-        adapterCategory = CategoryAdapter(onItemClick = { position ->
-            setFragment(position.id.videoId,"VideoId")
-        })
-        adapterChannel = ChannelAdapter(onItemClick = { position ->
-            setFragment(position.id, "ChannelId")
-        })
-
-        //어댑터 연결
-        binding.apply {
-            homeMostVidio.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            homeMostVidio.adapter = adapterMostPopular
-            homeCategory.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            homeCategory.adapter = adapterCategory
-            homeChannel.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            homeChannel.adapter = adapterChannel
-        }
+    private fun getQuery(query: String) = lifecycleScope.launch {
+        viewModel.getSearchData(query)
+        viewModel.getChannelList()
     }
 
     private fun setFragment(id: String?, param: String) {

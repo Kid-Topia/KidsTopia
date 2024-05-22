@@ -11,7 +11,7 @@ import com.limheejin.kidstopia.model.SearchItems
 class RVSearchAdapter(
     private val onItemClick: (SearchItems) -> Unit,
     private val onLongClick: (Int) -> Boolean
-) : RecyclerView.Adapter<RVSearchAdapter.MyViewHolder>(){
+) : RecyclerView.Adapter<RVSearchAdapter.MyViewHolder>() {
 
     private var items: List<SearchItems> = listOf()
 
@@ -22,7 +22,8 @@ class RVSearchAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = RvSearchfragmentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            RvSearchfragmentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 
@@ -35,7 +36,8 @@ class RVSearchAdapter(
         return items.size
     }
 
-    inner class MyViewHolder(val binding: RvSearchfragmentItemBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class MyViewHolder(val binding: RvSearchfragmentItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
                 val position = adapterPosition
@@ -45,20 +47,16 @@ class RVSearchAdapter(
             }
             binding.root.setOnLongClickListener {
                 val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION){
+                if (position != RecyclerView.NO_POSITION) {
                     onLongClick(position)
                 } else {
                     false
                 }
             }
-//            with(itemView){
-//                setOnClickListener { onItemClick(items[adapterPosition]) }
-//                setOnLongClickListener { onLongClick(adapterPosition) }
-//            }
         }
 
-        fun bind(data: SearchItems){
-            with(binding){
+        fun bind(data: SearchItems) {
+            with(binding) {
                 searchitemTitle.text = data.snippet.title
                 searchitemContext.text = data.snippet.description
                 Glide.with(itemView.context)

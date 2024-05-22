@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="50dp"
     android:layout_marginRight="50dp"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_dialog_cancel"
+    android:background="@drawable/bg_btn_dialog_cancel"
     android:padding="20dp">
 
     <TextView
@@ -41,7 +41,7 @@
         android:layout_height="46dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/bg_dialog_confirm"
+        android:background="@drawable/bg_btn_dialog_confirm"
         android:fontFamily="@font/gangwonmodubold"
         android:text="확인"
         android:textColor="@color/white"
@@ -66,4 +66,5 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_close2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

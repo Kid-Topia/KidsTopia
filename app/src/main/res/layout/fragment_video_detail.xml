@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:elevation="3dp"
-        android:src="@drawable/btn_detailfragment_back"
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/btn_fragment_detail_back"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/btn_play"
@@ -25,7 +25,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="70dp"
         android:elevation="3dp"
-        android:src="@drawable/slc_btn_play"
+        android:src="@drawable/slc_fragment_detail_play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/img_bg" />
 
@@ -97,7 +97,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginBottom="40dp"
         android:elevation="3dp"
-        android:src="@drawable/slc_btn_like"
+        android:src="@drawable/slc_fragment_detail_like"
         app:layout_constraintBottom_toBottomOf="@+id/img_bg"
         app:layout_constraintEnd_toStartOf="@+id/btn_share_img"
         app:layout_constraintStart_toStartOf="parent" />
@@ -123,7 +123,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="40dp"
         android:elevation="3dp"
-        android:src="@drawable/slc_btn_like"
+        android:src="@drawable/slc_fragment_detail_like"
         app:layout_constraintBottom_toBottomOf="@+id/img_bg"
         app:layout_constraintEnd_toEndOf="@+id/img_bg"
         app:layout_constraintStart_toEndOf="@+id/btn_like_img" />
@@ -142,7 +142,6 @@
         app:layout_constraintStart_toStartOf="@+id/btn_share_img"
         app:layout_constraintTop_toTopOf="@+id/btn_share_img" />
 
-
     <ImageView
         android:id="@+id/img_bg"
         android:layout_width="match_parent"
@@ -152,7 +151,7 @@
         android:layout_marginBottom="5dp"
         android:elevation="2dp"
         android:scaleType="fitXY"
-        android:src="@drawable/bg_detailfragment_img"
+        android:src="@drawable/bg_fragment_detail_img"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.7" />
 
@@ -161,7 +160,7 @@
         android:layout_height="0dp"
         android:elevation="1dp"
         android:scaleType="fitXY"
-        android:src="@drawable/bg_detailfragment_grd"
+        android:src="@drawable/bg_fragment_detail_grd"
         app:layout_constraintHeight_percent="0.45"
         app:layout_constraintTop_toTopOf="parent" />
 

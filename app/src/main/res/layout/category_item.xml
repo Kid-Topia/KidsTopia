@@ -37,5 +37,4 @@
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/category_cardview" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

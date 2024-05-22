@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(entities = [MyFavoriteVideoEntity::class], exportSchema = false, version = 2)
-abstract class MyFavoriteVideoDatabase: RoomDatabase() {
+abstract class MyFavoriteVideoDatabase : RoomDatabase() {
     abstract fun getDao(): MyFavoriteVideoDAO
 
     companion object {
@@ -19,11 +19,13 @@ abstract class MyFavoriteVideoDatabase: RoomDatabase() {
             }
         }
 
-        fun getDatabase(context: Context) : MyFavoriteVideoDatabase {
-
+        fun getDatabase(context: Context): MyFavoriteVideoDatabase {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(
-                    context.applicationContext, MyFavoriteVideoDatabase::class.java, "video_database")
+                    context.applicationContext,
+                    MyFavoriteVideoDatabase::class.java,
+                    "video_database"
+                )
                     .addMigrations(MIGRATION_1_2)
                     .build()
             }
