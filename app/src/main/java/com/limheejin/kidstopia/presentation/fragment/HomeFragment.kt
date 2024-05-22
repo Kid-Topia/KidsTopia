@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
         ArrayAdapter.createFromResource(
             requireContext(), R.array.spinner_array, android.R.layout.simple_spinner_item
         ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            adapter.setDropDownViewResource(R.layout.spinner_items)
             spinner.adapter = adapter
         }
 

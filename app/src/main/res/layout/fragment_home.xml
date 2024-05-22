@@ -82,13 +82,17 @@
             android:id="@+id/spinner"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/spinner_style"
+            android:dropDownVerticalOffset="25dp"
             android:entries="@array/spinner_array"
-            app:layout_constraintBottom_toBottomOf="@id/home_category_vidio"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/home_category_vidio"
-            app:layout_constraintTop_toTopOf="@id/home_category_vidio" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
     <androidx.recyclerview.widget.RecyclerView
