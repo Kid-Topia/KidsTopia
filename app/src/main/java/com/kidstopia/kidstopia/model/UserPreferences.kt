@@ -29,7 +29,7 @@ class UserPreferences(context: Context) {
             }
         }
         .map { preferences -> // DataStore에서 읽은 데이터를 원하는 형식으로 변환
-            preferences[USER_NAME_KEY] ?: "아무개님!"
+            preferences[USER_NAME_KEY] ?: "아무개 님!"
         }
 
     suspend fun updateUserName(name: String) { // 비동기 실행을 위한 suspend fun
