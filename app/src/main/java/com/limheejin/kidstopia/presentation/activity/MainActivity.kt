@@ -1,12 +1,9 @@
 package com.limheejin.kidstopia.presentation.activity
 
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +15,6 @@ import com.limheejin.kidstopia.R
 import com.limheejin.kidstopia.databinding.ActivityMainBinding
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDAO
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoDatabase
-import com.limheejin.kidstopia.presentation.CloseDialog
 import com.limheejin.kidstopia.presentation.fragment.HomeFragment
 import com.limheejin.kidstopia.presentation.fragment.MyVideoFragment
 import com.limheejin.kidstopia.presentation.fragment.SearchFragment
@@ -101,6 +97,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             .setCancelable(false)
 
         val alertDialog = builder.create()
+        // 다이얼로그의 Radius를 적용하기 위해 기존 다이얼로그의 builder 배경을 transparent로 설정
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
         dialogView.findViewById<AppCompatButton>(R.id.btn_confirm).setOnClickListener {
