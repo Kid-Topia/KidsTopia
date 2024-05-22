@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 object NetworkClient {
     private const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
-    const val AUTH_KEY = "AIzaSyChA0BPBMtunHj3EerDjYpLOVEg-2ZrmSE"
+    const val AUTH_KEY = "AIzaSyAz-1923eIk1sBChJAHd1dktMO0VLBvDac"
 
     private fun createOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
