@@ -114,7 +114,8 @@ class VideoDetailViewModelFactory(context: Context) : ViewModelProvider.Factory 
         NetworkClient.youtubeApiVideo,
         NetworkClient.youtubeApiChannel,
         NetworkClient.youtubeApiSearch,
-        NetworkClient.youtubeApiPopularVideo
+        NetworkClient.youtubeApiPopularVideo,
+        NetworkClient.youtubeApiOrderSearch
     )
 
     override fun <T : ViewModel> create(

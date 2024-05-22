@@ -7,13 +7,15 @@ import com.limheejin.kidstopia.model.SearchData
 import com.limheejin.kidstopia.presentation.network.ChannelInterface
 import com.limheejin.kidstopia.presentation.network.PopularVideoInterface
 import com.limheejin.kidstopia.presentation.network.SearchInterface
+import com.limheejin.kidstopia.presentation.network.SearchOrderInterface
 import com.limheejin.kidstopia.presentation.network.VideoInterface
 
 class NetworkRepositoryImpl(
     private val videoInterface : VideoInterface,
     private val channelInterface : ChannelInterface,
     private val searchInterface: SearchInterface,
-    private val popularVideoInterface: PopularVideoInterface
+    private val popularVideoInterface: PopularVideoInterface,
+    private val searchOrderInterface: SearchOrderInterface
 ): NetworkRepository {
     override suspend fun getPopularVideoList(
         AUTH_KEY: String,
@@ -47,6 +49,10 @@ class NetworkRepositoryImpl(
 
     override suspend fun getSearchVideoList(query: String): SearchData {
         return searchInterface.getSearchList(query)
+    }
+
+    override suspend fun getSearchOrderVideoList(query: String): SearchData {
+        return searchOrderInterface.getSearchList(query)
     }
 
 }

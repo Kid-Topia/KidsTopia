@@ -68,7 +68,8 @@ class SearchVideoViewModelFactory : ViewModelProvider.Factory {
         NetworkClient.youtubeApiVideo,
         NetworkClient.youtubeApiChannel,
         NetworkClient.youtubeApiSearch,
-        NetworkClient.youtubeApiPopularVideo
+        NetworkClient.youtubeApiPopularVideo,
+        NetworkClient.youtubeApiOrderSearch
     )
     override fun <T : ViewModel> create(
         modelClass: Class<T>,

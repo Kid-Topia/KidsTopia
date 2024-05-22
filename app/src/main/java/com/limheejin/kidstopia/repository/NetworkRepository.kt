@@ -23,4 +23,6 @@ interface NetworkRepository {
         id: String
     ): ChannelData
     suspend fun getSearchVideoList(query: String): SearchData
+
+    suspend fun getSearchOrderVideoList(query: String): SearchData
 }
