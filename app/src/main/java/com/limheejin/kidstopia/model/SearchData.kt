@@ -1,6 +1,6 @@
 package com.limheejin.kidstopia.model
 
-import retrofit2.http.Url
+
 
 data class SearchData(
     val kind: String,
@@ -42,7 +42,7 @@ data class Thumbnails(
     val default: Default,
     val medium: Medium,
     val high: High,
-    val maxres: Maxres
+    val maxres: Maxres?
 )
 
 data class Default(
