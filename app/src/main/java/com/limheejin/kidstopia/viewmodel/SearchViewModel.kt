@@ -8,10 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.limheejin.kidstopia.model.SearchItems
 import com.limheejin.kidstopia.presentation.network.NetworkClient
-import com.limheejin.kidstopia.repository.MyVideoRepository
-import com.limheejin.kidstopia.repository.MyVideoRepositoryImpl
-import com.limheejin.kidstopia.repository.Repository
-import com.limheejin.kidstopia.repository.RepositoryImpl
+import com.limheejin.kidstopia.repository.NetworkRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,7 +18,7 @@ import retrofit2.HttpException
 // UI 와 직접적으로 상호작용하는 코드는 SearchFragment, 데이터 처리와 비즈니스 로직은 ViewModel
 // LiveData를 통해 데이터 변경을 감지하면 UI 업데이트
 
-class SearchViewModel(private val repository: Repository) : ViewModel() {
+class SearchViewModel(private val repository: NetworkRepositoryImpl) : ViewModel() {
     private val _getSearchData: MutableLiveData<MutableList<SearchItems>> = MutableLiveData()
     val getSearchData: LiveData<MutableList<SearchItems>> get() = _getSearchData
 
@@ -67,8 +64,9 @@ class SearchViewModel(private val repository: Repository) : ViewModel() {
 
 
 class SearchVideoViewModelFactory : ViewModelProvider.Factory {
-    private val repository = RepositoryImpl(
+    private val repository = NetworkRepositoryImpl(
         NetworkClient.youtubeApiVideo,
+        NetworkClient.youtubeApiChannel,
         NetworkClient.youtubeApiSearch
     )
     override fun <T : ViewModel> create(
