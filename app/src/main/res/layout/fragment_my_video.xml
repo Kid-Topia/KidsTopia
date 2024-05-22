@@ -11,16 +11,16 @@
         android:id="@+id/constraintLayout"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/bg_fragment_myvideo_circleprofile"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/my_profile_iv"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="38dp"
+            android:layout_height="33dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_kidstopia"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,15 +34,26 @@
         android:id="@+id/my_id_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:fontFamily="@font/gangwonmodubold"
         android:text="아무개님!"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
+
+    <ImageView
+        android:id="@+id/ic_edit_username"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/ic_editpencil"
+        app:layout_constraintBottom_toBottomOf="@+id/my_id_tv"
+        app:layout_constraintStart_toEndOf="@+id/my_id_tv"
+        app:layout_constraintTop_toTopOf="@+id/my_id_tv"
+        app:tint="@color/grey88" />
 
     <TextView
         android:id="@+id/visit_page_tv"
