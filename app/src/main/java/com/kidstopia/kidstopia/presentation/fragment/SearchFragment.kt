@@ -1,5 +1,7 @@
 package com.kidstopia.kidstopia.presentation.fragment
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -89,6 +92,12 @@ class SearchFragment : Fragment() {
                 val query = binding.etSearch.text.toString()
                 if (query.isNotEmpty()) {
                     viewModel.searchVideos(query)
+                    fun hideKeyboard(activity: Activity){
+                        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(activity.window.decorView.applicationWindowToken, 0)
+                    }
+                    hideKeyboard(context as Activity)
+
                 } else {
                     Toast.makeText(requireContext(), "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
                 }
