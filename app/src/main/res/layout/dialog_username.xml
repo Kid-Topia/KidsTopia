@@ -64,7 +64,7 @@
         android:layout_height="46dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/bg_rv_searchitem"
+        android:background="@drawable/bg_btn_dialog_cancel"
         android:fontFamily="@font/gangwonmodubold"
         android:text="취소"
         android:textColor="@color/primary_yellow"
