@@ -1,7 +1,6 @@
 package com.limheejin.kidstopia.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,7 +17,6 @@ import com.limheejin.kidstopia.viewmodel.SearchVideoViewModelFactory
 import com.limheejin.kidstopia.viewmodel.SearchViewModel
 
 class SearchFragment : Fragment() {
-    // 뷰모델 생성
     private val viewModel by viewModels<SearchViewModel> {
         SearchVideoViewModelFactory()
     }
@@ -49,23 +47,26 @@ class SearchFragment : Fragment() {
         // 어댑터 인스턴스 생성
         searchAdapter = RVSearchAdapter(
             onItemClick = { position ->
-                val videoId = position.id.videoId // 선택한 비디오의 유튜브 비디오 ID값
+                val videoId = position.id.videoId
                 val videoDetailFragment = VideoDetailFragment()
-                val bundle = Bundle() // 일단 번들로 구현
+                val bundle = Bundle()
                 bundle.putString("VideoId", videoId)
                 videoDetailFragment.arguments = bundle
                 parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
+                    .setCustomAnimations(
+                        R.anim.slide_up,
+                        R.anim.none,
+                        R.anim.none,
+                        R.anim.slide_down
+                    )
                     .add(R.id.fl, videoDetailFragment)
                     .addToBackStack(null)
                     .commit()
             },
             onLongClick = { position ->
-                // 아이템 롱클릭 시 수행, 시간이 남으면 구현하기
                 true
             }
         )
-
         // 리사이클러뷰에 어댑터 설정
         binding.recyclerviewSearch.adapter = searchAdapter
     }

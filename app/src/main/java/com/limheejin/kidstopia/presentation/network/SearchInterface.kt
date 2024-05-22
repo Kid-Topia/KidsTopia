@@ -27,14 +27,7 @@ interface SearchOrderInterface {
         @Query("safeSearch") safeSearch: String = "strict",
         @Query("type") type: String = "video",
         @Query("maxResults") maxResults: Int = 8,
-        @Query("order") order : String = "viewCount",
-        @Query("regionCode") regionCode : String = "KR"
-
+        @Query("order") order: String = "viewCount",
+        @Query("regionCode") regionCode: String = "KR"
     ): SearchData
 }
-
-//        /* CategoryId
-//        15 - Pets & Animals,   1 -  Film & Animation
-//        27 - Education,        31 - Anime/Animation
-//        37 - Family,           23 - Comedy
-//        */

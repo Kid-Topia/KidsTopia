@@ -5,7 +5,7 @@ import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 
 class RoomRepositoryImpl(
     private val myFavoriteVideoDao: MyFavoriteVideoDAO
-): RoomRepository {
+) : RoomRepository {
     override suspend fun insertVideo(myFavoriteVideo: MyFavoriteVideoEntity) {
         myFavoriteVideoDao.insertVideo(myFavoriteVideo)
     }

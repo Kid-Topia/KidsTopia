@@ -20,7 +20,8 @@ class MostPopularVideoAdapter(private val onItemClick: (PopularItems) -> Unit) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MostPopularViewHolder {
-        val binding = MostPopularItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            MostPopularItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MostPopularViewHolder(binding)
     }
 
@@ -33,7 +34,8 @@ class MostPopularVideoAdapter(private val onItemClick: (PopularItems) -> Unit) :
         return items.size
     }
 
-    inner class MostPopularViewHolder(val binding: MostPopularItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MostPopularViewHolder(val binding: MostPopularItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
                 val position = adapterPosition

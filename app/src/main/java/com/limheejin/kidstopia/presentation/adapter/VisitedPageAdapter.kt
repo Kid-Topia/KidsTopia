@@ -4,21 +4,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.limheejin.kidstopia.databinding.RvFavoriteVideoBinding
 import com.limheejin.kidstopia.databinding.RvVisitedVideoBinding
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 
-class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>): RecyclerView.Adapter<VisitedPageAdapter.Holder>() {
-    interface ItemClick{
+class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>) :
+    RecyclerView.Adapter<VisitedPageAdapter.Holder>() {
+    interface ItemClick {
         fun itemClick(id: String)
     }
+
     var itemClick: ItemClick? = null
-    class Holder(private val binding: RvVisitedVideoBinding): RecyclerView.ViewHolder(binding.root) {
+
+    class Holder(private val binding: RvVisitedVideoBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val image = binding.visitedPageIv
         val channelId = binding.visitedPageChannelidTv
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val binding = RvVisitedVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            RvVisitedVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding)
     }
 

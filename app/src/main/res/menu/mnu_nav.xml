@@ -2,20 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/mnu_home"
+        android:enabled="true"
         android:icon="@drawable/ic_home"
-        android:title="Home"
-        android:enabled="true"/>
+        android:title="Home" />
 
     <item
         android:id="@+id/mnu_search"
+        android:enabled="true"
         android:icon="@drawable/ic_search"
-        android:title="Search"
-        android:enabled="true"/>
+        android:title="Search" />
 
     <item
         android:id="@+id/mnu_user"
+        android:enabled="true"
         android:icon="@drawable/ic_user"
-        android:title="User"
-        android:enabled="true"/>
+        android:title="User" />
 
 </menu>

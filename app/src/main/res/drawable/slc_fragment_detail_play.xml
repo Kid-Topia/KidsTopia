@@ -2,10 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="true"
-        android:drawable="@drawable/btn_detailfragment_like_slc" />
+        android:drawable="@drawable/btn_fragment_detail_play_slc" />
 
     <item
-        android:drawable="@drawable/btn_detailfragment_like" />
+        android:drawable="@drawable/btn_fragment_detail_play" />
 
 </selector>
 

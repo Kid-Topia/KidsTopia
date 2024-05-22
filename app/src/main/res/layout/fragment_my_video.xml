@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/my_profile_circle_component"
+        android:background="@drawable/bg_fragment_myvideo_circleprofile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -58,7 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/visited_page_rv"
         android:layout_width="match_parent"
@@ -84,7 +83,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/visited_page_rv" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favorite_video_rv"
         android:layout_width="match_parent"
@@ -96,6 +94,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/favorite_video_tv" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

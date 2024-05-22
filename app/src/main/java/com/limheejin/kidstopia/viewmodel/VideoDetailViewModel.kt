@@ -3,7 +3,6 @@ package com.limheejin.kidstopia.viewmodel
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,8 +29,9 @@ class VideoDetailViewModel(
     private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val _videoData = MutableLiveData<PopularData>()
-    private val _channelData = MutableLiveData<ChannelData>()
     val videoData: LiveData<PopularData> get() = _videoData
+
+    private val _channelData = MutableLiveData<ChannelData>()
     val channelData: LiveData<ChannelData> get() = _channelData
 
     fun fetchVideoData(videoId: String) {
@@ -62,7 +62,6 @@ class VideoDetailViewModel(
             val isLikedDate = databaseRepository.getIsLikedDate(videoId)
             val dateString = LocalDateTime.now().toString()
             val snippet = videoData.value?.items?.get(0)?.snippet
-
             if (classify == "isLiked") {
                 databaseRepository.insertVideo(
                     MyFavoriteVideoEntity(videoId, snippet?.title, snippet?.channelTitle, snippet?.thumbnails?.high?.url, dateString, classify, isLikedDate)
@@ -86,7 +85,6 @@ class VideoDetailViewModel(
                 databaseRepository.insertVideo( // DAO에 isVisited 동영상 정보 저장
                     MyFavoriteVideoEntity(videoId, snippet?.title, snippet?.thumbnails?.high?.url, date, snippet?.channelTitle, "isVisited", null)
                 )
-                Log.d("checkDb", "${databaseRepository.getAllVideo()}")
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
                     run {
                         Toast.makeText(context, R.string.toast_detailfragment_dislike, Toast.LENGTH_SHORT).show()
@@ -96,7 +94,6 @@ class VideoDetailViewModel(
                 databaseRepository.insertVideo( // DAO에 isVisited 동영상 정보 저장
                     MyFavoriteVideoEntity(videoId, snippet?.title, snippet?.channelTitle, snippet?.thumbnails?.high?.url, date, "isLiked", dateString)
                 )
-                Log.d("checkDb", "${databaseRepository.getAllVideo()}")
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
                     run {
                         Toast.makeText(context, R.string.toast_detailfragment_like, Toast.LENGTH_SHORT).show()
@@ -107,9 +104,9 @@ class VideoDetailViewModel(
     }
 }
 
-
 class VideoDetailViewModelFactory(context: Context) : ViewModelProvider.Factory {
-    private val databaseRepository = RoomRepositoryImpl(MyFavoriteVideoDatabase.getDatabase(context).getDao())
+    private val databaseRepository =
+        RoomRepositoryImpl(MyFavoriteVideoDatabase.getDatabase(context).getDao())
     private val networkRepository = NetworkRepositoryImpl(
         NetworkClient.youtubeApiVideo,
         NetworkClient.youtubeApiChannel,
@@ -122,7 +119,6 @@ class VideoDetailViewModelFactory(context: Context) : ViewModelProvider.Factory 
         modelClass: Class<T>,
         extras: CreationExtras
     ): T {
-
         return VideoDetailViewModel(
             databaseRepository,
             networkRepository

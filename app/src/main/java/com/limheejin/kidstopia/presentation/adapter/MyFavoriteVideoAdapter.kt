@@ -7,18 +7,23 @@ import com.bumptech.glide.Glide
 import com.limheejin.kidstopia.databinding.RvFavoriteVideoBinding
 import com.limheejin.kidstopia.model.database.MyFavoriteVideoEntity
 
-class MyFavoriteVideoAdapter(private val items: MutableList<MyFavoriteVideoEntity>): RecyclerView.Adapter<MyFavoriteVideoAdapter.Holder>() {
-    interface ItemClick{
+class MyFavoriteVideoAdapter(private val items: MutableList<MyFavoriteVideoEntity>) :
+    RecyclerView.Adapter<MyFavoriteVideoAdapter.Holder>() {
+    interface ItemClick {
         fun itemClick(id: String)
     }
+
     var itemClick: ItemClick? = null
-    class Holder(binding: RvFavoriteVideoBinding): RecyclerView.ViewHolder(binding.root) {
+
+    class Holder(binding: RvFavoriteVideoBinding) : RecyclerView.ViewHolder(binding.root) {
         val image = binding.favoriteVideoIv
         val channelId = binding.favoriteVideoChannelIdTv
         val title = binding.favoriteVideoTitleTv
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val binding = RvFavoriteVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            RvFavoriteVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding)
     }
 

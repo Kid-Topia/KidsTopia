@@ -20,7 +20,8 @@ class CategoryAdapter(private val onItemClick: (SearchItems) -> Unit) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = CategoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            CategoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CategoryViewHolder(binding)
     }
 
@@ -33,7 +34,8 @@ class CategoryAdapter(private val onItemClick: (SearchItems) -> Unit) :
         return categoryitems.size
     }
 
-    inner class CategoryViewHolder(val binding: CategoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CategoryViewHolder(val binding: CategoryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
                 val position = adapterPosition

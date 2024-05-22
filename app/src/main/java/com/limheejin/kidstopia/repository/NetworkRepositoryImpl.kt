@@ -1,6 +1,5 @@
 package com.limheejin.kidstopia.repository
 
-
 import com.limheejin.kidstopia.model.ChannelData
 import com.limheejin.kidstopia.model.PopularData
 import com.limheejin.kidstopia.model.SearchData
@@ -11,12 +10,12 @@ import com.limheejin.kidstopia.presentation.network.SearchOrderInterface
 import com.limheejin.kidstopia.presentation.network.VideoInterface
 
 class NetworkRepositoryImpl(
-    private val videoInterface : VideoInterface,
-    private val channelInterface : ChannelInterface,
+    private val videoInterface: VideoInterface,
+    private val channelInterface: ChannelInterface,
     private val searchInterface: SearchInterface,
     private val popularVideoInterface: PopularVideoInterface,
     private val searchOrderInterface: SearchOrderInterface
-): NetworkRepository {
+) : NetworkRepository {
     override suspend fun getPopularVideoList(
         AUTH_KEY: String,
         part: String,
