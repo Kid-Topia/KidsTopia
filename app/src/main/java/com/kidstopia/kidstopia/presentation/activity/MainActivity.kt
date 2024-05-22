@@ -79,10 +79,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             }
 
             R.id.mnu_user -> {
-                val myVideoFragment = supportFragmentManager.findFragmentByTag("MY_VIDEO")
-                    ?: MyVideoFragment().apply {
-                        fragmentTransaction.add(R.id.fl, this, "MY_VIDEO")
+                val currentFragment = supportFragmentManager.findFragmentByTag("MY_VIDEO")
+                    currentFragment?.let {
+                        fragmentTransaction.remove(it)
                     }
+                val myVideoFragment = MyVideoFragment().apply {
+                    fragmentTransaction.add(R.id.fl, this, "MY_VIDEO")
+                }
                 fragmentTransaction.show(myVideoFragment)
             }
         }
