@@ -15,10 +15,10 @@ class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>) 
 
     var itemClick: ItemClick? = null
 
-    class Holder(private val binding: RvVisitedVideoBinding) :
+    class Holder(binding: RvVisitedVideoBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val image = binding.visitedPageIv
-        val channelId = binding.visitedPageChannelidTv
+        val title = binding.visitedPageTitleTv
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -37,7 +37,7 @@ class VisitedPageAdapter(private val items: MutableList<MyFavoriteVideoEntity>) 
             .load(items[position].thumbnails)
             .into(holder.image)
 
-        holder.channelId.text = items[position].ChannelId
+        holder.title.text = items[position].title
     }
 
     override fun getItemCount(): Int {
