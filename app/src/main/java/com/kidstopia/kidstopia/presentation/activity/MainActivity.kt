@@ -92,26 +92,30 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onBackPressed() {
-        val dialogBinding = DialogExitBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogBinding.root)
-            .setCancelable(false)
-            .create()
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            val dialogBinding = DialogExitBinding.inflate(layoutInflater)
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogBinding.root)
+                .setCancelable(false)
+                .create()
 
-        // 다이얼로그의 Radius를 적용하기 위해 기존 다이얼로그의 builder 배경을 transparent로 설정
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // 다이얼로그의 Radius를 적용하기 위해 기존 다이얼로그의 builder 배경을 transparent로 설정
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
-        dialogBinding.btnConfirm.setOnClickListener {
-            dialog.dismiss()
-            super.onBackPressed()  // 확인 버튼을 누르면 앱 종료
+            // 다이얼로그 내부의 버튼 초기화 및 클릭 이벤트 설정
+            dialogBinding.btnConfirm.setOnClickListener {
+                dialog.dismiss()
+                super.onBackPressed()  // 확인 버튼을 누르면 앱 종료
+            }
+
+            dialogBinding.btnCancel.setOnClickListener {
+                dialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
+            }
+
+            dialog.show()
+        } else {
+            supportFragmentManager.popBackStack()
         }
-
-        dialogBinding.btnCancel.setOnClickListener {
-            dialog.dismiss()  // 취소 버튼을 누르면 다이얼로그 닫기
-        }
-
-        dialog.show()
     }
 }
 

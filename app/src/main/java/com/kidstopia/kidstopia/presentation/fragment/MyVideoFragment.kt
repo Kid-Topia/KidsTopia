@@ -55,6 +55,13 @@ class MyVideoFragment : Fragment() {
         observeUserName()
     }
 
+    override fun onStart() {
+        super.onStart()
+        lifecycleScope.launch {
+            getItems()
+        }
+    }
+
     private fun getItems() = lifecycleScope.launch {
         myVideoViewModel.getItems()
     }
@@ -146,7 +153,7 @@ class MyVideoFragment : Fragment() {
         videoDetailFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.slide_up, R.anim.none, R.anim.none, R.anim.slide_down)
-            .add(R.id.fl, videoDetailFragment)
+            .replace(R.id.fl, videoDetailFragment)
             .addToBackStack(null)
             .commit()
     }

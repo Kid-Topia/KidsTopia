@@ -83,7 +83,7 @@ class VideoDetailViewModel(
 
             if (isLikedDate != null) {
                 databaseRepository.insertVideo( // DAO에 isVisited 동영상 정보 저장
-                    MyFavoriteVideoEntity(videoId, snippet?.title, snippet?.thumbnails?.high?.url, date, snippet?.channelTitle, "isVisited", null)
+                    MyFavoriteVideoEntity(videoId, snippet?.title, snippet?.channelTitle, snippet?.thumbnails?.high?.url, date, "isVisited", null)
                 )
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
                     run {

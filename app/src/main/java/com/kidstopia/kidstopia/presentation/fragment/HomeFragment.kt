@@ -19,7 +19,6 @@ import com.kidstopia.kidstopia.presentation.adapter.MostPopularVideoAdapter
 import com.kidstopia.kidstopia.viewmodel.HomeViewModel
 import com.kidstopia.kidstopia.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.launch
-
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -42,10 +41,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        getItems()
+        getItems()
         setupSpinner()
-//        setupRecyclerView()
-//        setupObservers()
+        setupObservers()
+        setupRecyclerView()
+
 
     }
 
@@ -74,18 +74,38 @@ class HomeFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-//                when (position) {
-//                    0 -> getQuery("뽀로로 다시보기") // 뽀로로
-//                    1 -> getQuery("핑크퐁 다시보기") // 핑크퐁
-//                    2 -> getQuery("노리q 동물") // 동물 : 노리q
-//                    3 -> getQuery("주니토니") // 음악 : 주니토니
-//                    4 -> getQuery("예림tv") // 동화 : 예림tv
-//                    5 -> getQuery("깨비키즈 과학") // 과학 : 깨비키즈 과학
-//                    6 -> getQuery("아이들교실") // 교육 : 아이들교실
-//                }
+                when (position) {
+                    0 -> getQuery("뽀로로 다시보기") // 뽀로로
+                    1 -> getQuery("핑크퐁 다시보기") // 핑크퐁
+                    2 -> getQuery("노리q 동물") // 동물 : 노리q
+                    3 -> getQuery("주니토니") // 음악 : 주니토니
+                    4 -> getQuery("예림tv") // 동화 : 예림tv
+                    5 -> getQuery("깨비키즈 과학") // 과학 : 깨비키즈 과학
+                    6 -> getQuery("아이들교실") // 교육 : 아이들교실
+                }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
+        }
+
+    }
+
+    private fun getQuery(query: String) = lifecycleScope.launch {
+        viewModel.getSearchData(query)
+    }
+
+    private fun setupObservers() {
+        viewModel.getSearchData.observe(viewLifecycleOwner) { searchData ->
+            adapterCategory.setCategoryItems(searchData)
+        }
+
+        viewModel.getChannelData.observe(viewLifecycleOwner) { channelData ->
+            adapterChannel.setItemsChannel(channelData)
+        }
+
+        viewModel.getPopularData.observe(viewLifecycleOwner) { popularData ->
+            adapterMostPopular.setItems(popularData)
+
         }
     }
 
@@ -113,26 +133,6 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             homeChannel.adapter = adapterChannel
         }
-    }
-
-    private fun setupObservers() {
-        viewModel.getSearchData.observe(viewLifecycleOwner) { searchData ->
-            adapterCategory.setCategoryItems(searchData)
-        }
-
-        viewModel.getChannelData.observe(viewLifecycleOwner) { channelData ->
-            adapterChannel.setItemsChannel(channelData)
-        }
-
-        viewModel.getPopularData.observe(viewLifecycleOwner) { popularData ->
-            adapterMostPopular.setItems(popularData)
-
-        }
-    }
-
-    private fun getQuery(query: String) = lifecycleScope.launch {
-        viewModel.getSearchData(query)
-        viewModel.getChannelList()
     }
 
     private fun setFragment(id: String?, param: String) {
