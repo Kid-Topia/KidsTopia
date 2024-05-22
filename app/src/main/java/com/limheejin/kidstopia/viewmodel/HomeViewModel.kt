@@ -41,7 +41,7 @@ class HomeViewModel(
     private val _getSearchData: MutableLiveData<MutableList<SearchItems>> = MutableLiveData()
     val getSearchData: LiveData<MutableList<SearchItems>> get() = _getSearchData
     fun getSearchData(query: String) = viewModelScope.launch {
-        val searchData = networkRepository.getSearchVideoList(query)
+        val searchData = networkRepository.getSearchOrderVideoList(query)
         _getSearchData.value = searchData.items
     }
 
@@ -71,7 +71,8 @@ class HomeViewModelFactory() : ViewModelProvider.Factory {
         NetworkClient.youtubeApiVideo,
         NetworkClient.youtubeApiChannel,
         NetworkClient.youtubeApiSearch,
-        NetworkClient.youtubeApiPopularVideo
+        NetworkClient.youtubeApiPopularVideo,
+        NetworkClient.youtubeApiOrderSearch
     )
     override fun <T : ViewModel> create(
         modelClass: Class<T>,

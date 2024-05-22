@@ -85,6 +85,7 @@ class HomeFragment : Fragment() {
 
     }
     private fun getQuery(query: String) = lifecycleScope.launch {
+        Log.d("CheckQuery", "$query")
         viewModel.getSearchData(query)
         viewModel.getChannelList()
     }
