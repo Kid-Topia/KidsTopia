@@ -82,9 +82,9 @@ C:.
      - Spinner 내부에 카테고리 선택시 관련된 영상을 불러 옵니다
    - 카테고리 채널 -> Channel 엔드 포인트
      -  카테고리 영상의 채널 ID를 Channel 엔드포인트로 보내서 해당 Channel을 나오게 함.
-      -  가져온 영상들은 조회수 순으로 가져왔습니다
-   -  서치 데이터를 이용해 Spinner에 지정해 놓은 
-<img src="https://github.com/Kid-Topia/KidsTopia/assets/71829509/2a2bcf2a-5c86-455b-ae24-15090f484b88" width="200" height="350"/>
+      -  가져온 영상들은 조회수 순으로 가져왔습니다 
+   -  
+<img src="https://github.com/Kid-Topia/KidsTopia/assets/71829509/2a2bcf2a-5c86-455b-ae24-15090f484b88" width="200" height="350"/><br>
  - Detail
     - 상단에 해당 영상의 썸네일을 띄움 (Glide 활용)
     - 썸네일 하단에 비디오 정보가 담겨있는 박스를 배치
@@ -96,8 +96,9 @@ C:.
     -  하단에 재밌어요 버튼으로 좋아요 처리
         - Room db에 해당 동영상 정보 저장
         - 이미 저장되어 있는 영상은 정보 삭제 처리
-        - 각 상황마다 다른 Toast 표출하여 구
-<img src="https://github.com/Kid-Topia/KidsTopia/assets/71829509/580a0d4f-023f-4f53-b948-e1ae6fc8f5b0" width="200" height="350"/>
+        - 각 상황마다 다른 Toast 표출하여 구분
+
+<img src="https://github.com/Kid-Topia/KidsTopia/assets/71829509/580a0d4f-023f-4f53-b948-e1ae6fc8f5b0" width="200" height="350"/><br>
 
  - Search
    - YouTube Data API의 search 엔드포인트 이용
@@ -112,7 +113,9 @@ C:.
   - 영상 클릭 시 Detail Fragment로 이동
   - MVVM으로 구현 (SearchViewModel, Repository)
   - HandleException 메소드를 만들어 네트워크 오류 처리
-<img src="https://github.com/Kid-Topia/KidsTopia/assets/71829509/23a7bb6d-9d9c-45d5-b38c-e74549ed35c2" width="200" height="350"/>
+
+<img src="https://github.com/Kid-Topia/KidsTopia/assets/71829509/23a7bb6d-9d9c-45d5-b38c-e74549ed35c2" width="200" height="350"/> <br>
+
  - My Video
    - 방문한 페이지 Room db에 저장
    - 재밌어요 누른 동영상 Room db에 저장
