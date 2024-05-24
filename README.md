@@ -1,8 +1,6 @@
- # 키즈토피아
-
 ![image](https://github.com/Kid-Topia/KidsTopia/assets/161282085/b0f081bd-2f5d-4e45-813d-003e462e7980)
 
- ![KidsTopia](https://teamsparta.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F229a2f81-ed93-4c8c-a162-d7622d53dc88%2FUntitled.png?table=block&id=6fff48e4-0ee1-4940-9e24-649bd89905b8&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=2000&userId=&cache=v2)
+
 
 ## 🖥️ 프로젝트 소개
 키즈 토피아는 Youtube Data API v3를 사용하여 키즈 카테고리의 비디오를 검색 및 저장할 수 있는 키즈 앱입니다.
@@ -74,6 +72,14 @@ C:.
     ├─values-night
     └─xml  
 ```
+
+### 📖 와이어프레임
+![image](https://github.com/Kid-Topia/KidsTopia/assets/141006937/6f88b8f3-aa8d-4593-804e-71bb39dabc2c)
+![image](https://github.com/Kid-Topia/KidsTopia/assets/141006937/f164fa33-3ef8-4e67-826d-df36bb25409f)
+![image](https://github.com/Kid-Topia/KidsTopia/assets/141006937/0d359953-12c3-40b9-9e0a-ec3d050fcf95)
+![image](https://github.com/Kid-Topia/KidsTopia/assets/141006937/0837ab19-04af-45b7-b395-18c59a800cf5)
+![image](https://github.com/Kid-Topia/KidsTopia/assets/141006937/3e00fe04-7942-47f1-b1c8-a09a97605642)
+![image](https://github.com/Kid-Topia/KidsTopia/assets/141006937/e273789f-867f-42ea-9250-7174603df331)
 
 
 ### 🔎 페이지별 기능 
